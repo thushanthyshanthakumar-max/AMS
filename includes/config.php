@@ -16,6 +16,10 @@ if (getenv('MYSQLHOST') || getenv('RAILWAY_ENVIRONMENT')) {
     define('DB_NAME', 'attendance_system');
     define('DB_USER', 'root');
     define('DB_PASS', '');
+    // define('DB_HOST', 'sql107.infinityfree.com');
+    // define('DB_NAME', 'if0_40625038_attendance_system');
+    // define('DB_USER', 'if0_40625038');
+    // define('DB_PASS', 'pxDLG2EQicVsm');
     
     // Application configuration
     define('APP_NAME', 'Student Attendance Management System');
@@ -41,3 +45,24 @@ if (getenv('MYSQLHOST') || getenv('RAILWAY_ENVIRONMENT')) {
     }
 }
 ?>
+
+
+<?php
+/**
+ * Database Configuration File
+ * Automatically detects environment and uses appropriate config
+ * Supports: Local (XAMPP), Railway, InfinityFree
+ */
+
+// Check if running on Railway
+if (getenv('MYSQLHOST') || getenv('RAILWAY_ENVIRONMENT')) {
+    // Use Railway configuration
+    require_once __DIR__ . '/config.railway.php';
+} 
+// Check if running on InfinityFree (check for InfinityFree-specific environment)
+elseif (file_exists(__DIR__ . '/config.infinityfree.php')) {
+    // Use InfinityFree configuration
+    require_once __DIR__ . '/config.infinityfree.php';
+} 
+// Default to local configuration
+
