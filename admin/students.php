@@ -9,35 +9,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action'])) {
         try {
             if ($_POST['action'] === 'create') {
+                $regNo = sanitize($_POST['reg_no']);
+                $title = sanitize($_POST['title']);
                 $name = sanitize($_POST['name']);
-                $email = sanitize($_POST['email']);
-                $phone = sanitize($_POST['phone']);
                 $groupId = (int)$_POST['group_id'];
                 
-                if (empty($name) || empty($groupId)) {
-                    setFlashMessage('danger', 'Name and group are required.');
-                } elseif (!empty($email) && !validateEmail($email)) {
-                    setFlashMessage('danger', 'Invalid email format.');
+                if (empty($regNo) || empty($title) || empty($name) || empty($groupId)) {
+                    setFlashMessage('danger', 'Registration number, title, name and group are required.');
                 } else {
-                    $stmt = $pdo->prepare("INSERT INTO students (name, email, phone, group_id) VALUES (?, ?, ?, ?)");
-                    $stmt->execute([$name, $email, $phone, $groupId]);
+                    $stmt = $pdo->prepare("INSERT INTO students (reg_no, title, name, group_id) VALUES (?, ?, ?, ?)");
+                    $stmt->execute([$regNo, $title, $name, $groupId]);
                     setFlashMessage('success', 'Student added successfully.');
                     redirect('students.php');
                 }
             } elseif ($_POST['action'] === 'update') {
                 $id = (int)$_POST['id'];
+                $regNo = sanitize($_POST['reg_no']);
+                $title = sanitize($_POST['title']);
                 $name = sanitize($_POST['name']);
-                $email = sanitize($_POST['email']);
-                $phone = sanitize($_POST['phone']);
                 $groupId = (int)$_POST['group_id'];
                 
-                if (empty($name) || empty($groupId)) {
-                    setFlashMessage('danger', 'Name and group are required.');
-                } elseif (!empty($email) && !validateEmail($email)) {
-                    setFlashMessage('danger', 'Invalid email format.');
+                if (empty($regNo) || empty($title) || empty($name) || empty($groupId)) {
+                    setFlashMessage('danger', 'Registration number, title, name and group are required.');
                 } else {
-                    $stmt = $pdo->prepare("UPDATE students SET name = ?, email = ?, phone = ?, group_id = ? WHERE id = ?");
-                    $stmt->execute([$name, $email, $phone, $groupId, $id]);
+                    $stmt = $pdo->prepare("UPDATE students SET reg_no = ?, title = ?, name = ?, group_id = ? WHERE id = ?");
+                    $stmt->execute([$regNo, $title, $name, $groupId, $id]);
                     setFlashMessage('success', 'Student updated successfully.');
                     redirect('students.php');
                 }
@@ -111,9 +107,9 @@ $preselectedGroup = isset($_GET['group_id']) ? (int)$_GET['group_id'] : null;
                 <table id="studentsTable">
                     <thead>
                         <tr>
+                            <th>Reg. No.</th>
+                            <th>Title</th>
                             <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
                             <th>Group</th>
                             <th>Created At</th>
                             <th>Actions</th>
@@ -122,13 +118,13 @@ $preselectedGroup = isset($_GET['group_id']) ? (int)$_GET['group_id'] : null;
                     <tbody>
                         <?php foreach ($students as $student): ?>
                         <tr>
-                            <td><strong><?php echo htmlspecialchars($student['name']); ?></strong></td>
-                            <td><?php echo htmlspecialchars($student['email']); ?></td>
-                            <td><?php echo htmlspecialchars($student['phone']); ?></td>
+                            <td><strong><?php echo htmlspecialchars($student['reg_no']); ?></strong></td>
+                            <td><span class="badge badge-<?php echo $student['title'] === 'MR' ? 'primary' : 'info'; ?>"><?php echo htmlspecialchars($student['title']); ?></span></td>
+                            <td><?php echo htmlspecialchars($student['name']); ?></td>
                             <td><?php echo htmlspecialchars($student['group_name']); ?></td>
                             <td><?php echo formatDate($student['created_at']); ?></td>
                             <td>
-                                <button onclick="editStudent(<?php echo $student['id']; ?>, '<?php echo htmlspecialchars($student['name'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($student['email'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($student['phone'], ENT_QUOTES); ?>', <?php echo $student['group_id']; ?>)" class="btn btn-sm btn-warning">
+                                <button onclick="editStudent(<?php echo $student['id']; ?>, '<?php echo htmlspecialchars($student['reg_no'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($student['title'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($student['name'], ENT_QUOTES); ?>', <?php echo $student['group_id']; ?>)" class="btn btn-sm btn-warning">
                                     <i class="fas fa-edit"></i> Edit
                                 </button>
                                 <form method="POST" style="display: inline;" onsubmit="return confirm('Delete this student? All attendance records will also be deleted.');">
@@ -160,18 +156,23 @@ $preselectedGroup = isset($_GET['group_id']) ? (int)$_GET['group_id'] : null;
                 <input type="hidden" name="action" value="create">
                 
                 <div class="form-group">
-                    <label for="name" class="form-label">Full Name</label>
-                    <input type="text" id="name" name="name" class="form-control" placeholder="Alice Johnson" required>
+                    <label for="reg_no" class="form-label">Registration Number</label>
+                    <input type="text" id="reg_no" name="reg_no" class="form-control" placeholder="2024/CSC/001" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="email" class="form-label">Email (Optional)</label>
-                    <input type="email" id="email" name="email" class="form-control" placeholder="alice.j@student.com">
+                    <label for="title" class="form-label">Title</label>
+                    <select id="title" name="title" class="form-control" required>
+                        <option value="">Select title...</option>
+                        <option value="MR">MR</option>
+                        <option value="MISS">MISS</option>
+                        <option value="MRS">MRS</option>
+                    </select>
                 </div>
                 
                 <div class="form-group">
-                    <label for="phone" class="form-label">Phone (Optional)</label>
-                    <input type="tel" id="phone" name="phone" class="form-control" placeholder="555-0201">
+                    <label for="name" class="form-label">Name with Initials</label>
+                    <input type="text" id="name" name="name" class="form-control" placeholder="AHAMED A.G.I." required>
                 </div>
                 
                 <div class="form-group">
@@ -209,18 +210,23 @@ $preselectedGroup = isset($_GET['group_id']) ? (int)$_GET['group_id'] : null;
                 <input type="hidden" id="edit_id" name="id" value="<?php echo $editStudent ? $editStudent['id'] : ''; ?>">
                 
                 <div class="form-group">
-                    <label for="edit_name" class="form-label">Full Name</label>
+                    <label for="edit_reg_no" class="form-label">Registration Number</label>
+                    <input type="text" id="edit_reg_no" name="reg_no" class="form-control" value="<?php echo $editStudent ? htmlspecialchars($editStudent['reg_no']) : ''; ?>" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit_title" class="form-label">Title</label>
+                    <select id="edit_title" name="title" class="form-control" required>
+                        <option value="">Select title...</option>
+                        <option value="MR" <?php echo ($editStudent && $editStudent['title'] == 'MR') ? 'selected' : ''; ?>>MR</option>
+                        <option value="MISS" <?php echo ($editStudent && $editStudent['title'] == 'MISS') ? 'selected' : ''; ?>>MISS</option>
+                        <option value="MRS" <?php echo ($editStudent && $editStudent['title'] == 'MRS') ? 'selected' : ''; ?>>MRS</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit_name" class="form-label">Name with Initials</label>
                     <input type="text" id="edit_name" name="name" class="form-control" value="<?php echo $editStudent ? htmlspecialchars($editStudent['name']) : ''; ?>" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="edit_email" class="form-label">Email (Optional)</label>
-                    <input type="email" id="edit_email" name="email" class="form-control" value="<?php echo $editStudent ? htmlspecialchars($editStudent['email']) : ''; ?>">
-                </div>
-                
-                <div class="form-group">
-                    <label for="edit_phone" class="form-label">Phone (Optional)</label>
-                    <input type="tel" id="edit_phone" name="phone" class="form-control" value="<?php echo $editStudent ? htmlspecialchars($editStudent['phone']) : ''; ?>">
                 </div>
                 
                 <div class="form-group">
@@ -246,11 +252,11 @@ $preselectedGroup = isset($_GET['group_id']) ? (int)$_GET['group_id'] : null;
 </div>
 
 <script>
-function editStudent(id, name, email, phone, groupId) {
+function editStudent(id, regNo, title, name, groupId) {
     document.getElementById('edit_id').value = id;
+    document.getElementById('edit_reg_no').value = regNo;
+    document.getElementById('edit_title').value = title;
     document.getElementById('edit_name').value = name;
-    document.getElementById('edit_email').value = email;
-    document.getElementById('edit_phone').value = phone;
     document.getElementById('edit_group_id').value = groupId;
     openModal('editStudentModal');
 }

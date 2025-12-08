@@ -26,42 +26,59 @@ try {
     $assignedGroups = [];
 }
 
-// Filter by group
-$selectedGroup = isset($_GET['group_id']) ? (int)$_GET['group_id'] : null;
+// Filter inputs
+$selectedGroup = isset($_GET['group_id']) && $_GET['group_id'] !== '' ? (int)$_GET['group_id'] : null;
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
 
 // Get students
 $students = [];
+$params = [];
+$sqlConditions = "";
+
+if ($search) {
+    $sqlConditions .= " AND (s.name LIKE ? OR s.reg_no LIKE ?)";
+    $params[] = "%$search%";
+    $params[] = "%$search%";
+}
+
 if ($selectedGroup && teacherHasAccessToGroup($pdo, $teacherId, $selectedGroup)) {
     try {
-        $stmt = $pdo->prepare("
-            SELECT s.*,
-                   (SELECT COUNT(*) FROM attendance WHERE student_id = s.id AND status = 'present') as present_count,
-                   (SELECT COUNT(*) FROM attendance WHERE student_id = s.id) as total_attendance
-            FROM students s
-            WHERE s.group_id = ?
-            ORDER BY s.name
-        ");
-        $stmt->execute([$selectedGroup]);
-        $students = $stmt->fetchAll();
-    } catch (PDOException $e) {
-        setFlashMessage('danger', 'Error loading students.');
-    }
-} elseif (!$selectedGroup && !empty($assignedGroups)) {
-    // Show all students from all assigned groups
-    try {
-        $groupIds = array_column($assignedGroups, 'id');
-        $placeholders = implode(',', array_fill(0, count($groupIds), '?'));
-        
         $stmt = $pdo->prepare("
             SELECT s.*, g.name as group_name,
                    (SELECT COUNT(*) FROM attendance WHERE student_id = s.id AND status = 'present') as present_count,
                    (SELECT COUNT(*) FROM attendance WHERE student_id = s.id) as total_attendance
             FROM students s
             JOIN groups g ON s.group_id = g.id
-            WHERE s.group_id IN ($placeholders)
-            ORDER BY g.name, s.name
+            WHERE s.group_id = ? $sqlConditions
+            ORDER BY s.reg_no
         ");
-        $stmt->execute($groupIds);
+        
+        $queryParams = array_merge([$selectedGroup], $params);
+        $stmt->execute($queryParams);
+        $students = $stmt->fetchAll();
+    } catch (PDOException $e) {
+        setFlashMessage('danger', 'Error loading students.');
+    }
+} elseif (empty($selectedGroup) && !empty($assignedGroups)) {
+    // Show all students from all assigned groups
+    try {
+        $groupIds = array_column($assignedGroups, 'id');
+        $placeholders = implode(',', array_fill(0, count($groupIds), '?'));
+        
+        $baseSql = "
+            SELECT s.*, g.name as group_name,
+                   (SELECT COUNT(*) FROM attendance WHERE student_id = s.id AND status = 'present') as present_count,
+                   (SELECT COUNT(*) FROM attendance WHERE student_id = s.id) as total_attendance
+            FROM students s
+            JOIN groups g ON s.group_id = g.id
+            WHERE s.group_id IN ($placeholders) $sqlConditions
+            ORDER BY g.name, s.reg_no
+        ";
+        
+        $queryParams = array_merge($groupIds, $params);
+        
+        $stmt = $pdo->prepare($baseSql);
+        $stmt->execute($queryParams);
         $students = $stmt->fetchAll();
     } catch (PDOException $e) {
         setFlashMessage('danger', 'Error loading students.');
@@ -119,24 +136,41 @@ if (isset($_GET['view'])) {
     <!-- View Student Details -->
     <div class="card">
         <div class="card-header">
-            <h2><i class="fas fa-user-graduate"></i> <?php echo htmlspecialchars($viewStudent['name']); ?></h2>
+            <h2><i class="fas fa-user-graduate"></i> Student Profile</h2>
             <a href="students.php" class="btn btn-secondary btn-sm">
                 <i class="fas fa-arrow-left"></i> Back to Students
             </a>
         </div>
         <div class="card-body">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
-                <div>
-                    <strong>Email:</strong><br>
-                    <?php echo htmlspecialchars($viewStudent['email']); ?>
+            <div style="display: flex; gap: 2rem; align-items: flex-start; margin-bottom: 2rem;">
+                <div style="background: var(--light-color); padding: 2rem; border-radius: 50%; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: var(--primary-color);">
+                    <i class="fas fa-user"></i>
                 </div>
-                <div>
-                    <strong>Phone:</strong><br>
-                    <?php echo htmlspecialchars($viewStudent['phone']); ?>
-                </div>
-                <div>
-                    <strong>Group:</strong><br>
-                    <?php echo htmlspecialchars($viewStudent['group_name']); ?>
+                <div style="flex: 1;">
+                    <div style="margin-bottom: 1.5rem;">
+                        <span class="badge badge-<?php echo $viewStudent['title'] === 'MR' ? 'primary' : 'info'; ?>" style="font-size: 0.875rem; margin-bottom: 0.5rem;">
+                            <?php echo htmlspecialchars($viewStudent['title']); ?>
+                        </span>
+                        <h1 style="color: var(--text-primary); margin: 0; font-size: 2rem;"><?php echo htmlspecialchars($viewStudent['name']); ?></h1>
+                        <p style="color: var(--text-secondary); font-size: 1.25rem; margin-top: 0.25rem; font-weight: 500;">
+                            <?php echo htmlspecialchars($viewStudent['reg_no']); ?>
+                        </p>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <div style="background: var(--light-color); padding: 1rem; border-radius: var(--radius-md); border-left: 4px solid var(--primary-color);">
+                            <small class="text-uppercase" style="color: var(--text-secondary); font-weight: 700; font-size: 0.75rem;">Group</small>
+                            <div style="font-weight: 600; font-size: 1.1rem; margin-top: 0.25rem;">
+                                <?php echo htmlspecialchars($viewStudent['group_name']); ?>
+                            </div>
+                        </div>
+                        <div style="background: var(--light-color); padding: 1rem; border-radius: var(--radius-md); border-left: 4px solid var(--info-color);">
+                            <small class="text-uppercase" style="color: var(--text-secondary); font-weight: 700; font-size: 0.75rem;">Joined Date</small>
+                            <div style="font-weight: 600; font-size: 1.1rem; margin-top: 0.25rem;">
+                                <?php echo date('F j, Y', strtotime($viewStudent['created_at'])); ?>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -213,31 +247,48 @@ if (isset($_GET['view'])) {
         </div>
         <div class="card-body">
             <form method="GET" class="mb-3">
-                <div class="form-group">
-                    <label for="group_id" class="form-label">Filter by Group</label>
-                    <select id="group_id" name="group_id" class="form-control" onchange="this.form.submit()">
-                        <option value="">All Groups</option>
-                        <?php foreach ($assignedGroups as $group): ?>
-                            <option value="<?php echo $group['id']; ?>" <?php echo ($selectedGroup == $group['id']) ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($group['name']); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <div class="form-group" style="flex: 1; min-width: 200px;">
+                        <label for="group_id" class="form-label">Filter by Group</label>
+                        <select id="group_id" name="group_id" class="form-control" onchange="this.form.submit()">
+                            <option value="">All Groups</option>
+                            <?php foreach ($assignedGroups as $group): ?>
+                                <option value="<?php echo $group['id']; ?>" <?php echo ($selectedGroup == $group['id']) ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($group['name']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1; min-width: 200px;">
+                        <label for="search" class="form-label">Search Students</label>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <input type="text" id="search" name="search" class="form-control" 
+                                   placeholder="Search by name or reg no..." value="<?php echo htmlspecialchars($search); ?>">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            <?php if (!empty($search)): ?>
+                                <a href="students.php" class="btn btn-secondary" title="Clear Search">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
                 </div>
             </form>
             
             <?php if (empty($students)): ?>
                 <p class="text-center" style="color: var(--text-secondary); padding: 2rem;">
-                    <i class="fas fa-info-circle"></i> No students found.
+                    <i class="fas fa-info-circle"></i> No students found matching your search.
                 </p>
             <?php else: ?>
                 <div class="table-responsive">
                     <table id="studentsTable">
                         <thead>
                             <tr>
+                                <th>Reg. No.</th>
+                                <th>Title</th>
                                 <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
                                 <?php if (!$selectedGroup): ?>
                                     <th>Group</th>
                                 <?php endif; ?>
@@ -250,9 +301,9 @@ if (isset($_GET['view'])) {
                                 $attendanceRate = calculateAttendancePercentage($student['present_count'], $student['total_attendance']);
                             ?>
                             <tr>
-                                <td><strong><?php echo htmlspecialchars($student['name']); ?></strong></td>
-                                <td><?php echo htmlspecialchars($student['email']); ?></td>
-                                <td><?php echo htmlspecialchars($student['phone']); ?></td>
+                                <td><strong><?php echo htmlspecialchars($student['reg_no']); ?></strong></td>
+                                <td><span class="badge badge-<?php echo $student['title'] === 'MR' ? 'primary' : 'info'; ?>"><?php echo htmlspecialchars($student['title']); ?></span></td>
+                                <td><?php echo htmlspecialchars($student['name']); ?></td>
                                 <?php if (!$selectedGroup): ?>
                                     <td><?php echo htmlspecialchars($student['group_name']); ?></td>
                                 <?php endif; ?>
@@ -260,11 +311,11 @@ if (isset($_GET['view'])) {
                                     <span class="badge <?php echo $attendanceRate >= 75 ? 'badge-success' : ($attendanceRate >= 50 ? 'badge-warning' : 'badge-danger'); ?>">
                                         <?php echo $attendanceRate; ?>%
                                     </span>
-                                    (<?php echo $student['present_count']; ?>/<?php echo $student['total_attendance']; ?>)
+                                    <small class="text-secondary ml-1">(<?php echo $student['present_count']; ?>/<?php echo $student['total_attendance']; ?>)</small>
                                 </td>
                                 <td>
                                     <a href="students.php?view=<?php echo $student['id']; ?>" class="btn btn-sm btn-primary">
-                                        <i class="fas fa-eye"></i> View Details
+                                        <i class="fas fa-eye"></i> View Profile
                                     </a>
                                 </td>
                             </tr>

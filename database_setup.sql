@@ -40,13 +40,14 @@ CREATE TABLE groups (
 -- Students table (student details)
 CREATE TABLE students (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    reg_no VARCHAR(50) UNIQUE NOT NULL,
+    title ENUM('MR', 'MISS', 'MRS') NOT NULL,
     name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE,
-    phone VARCHAR(20),
     group_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE,
-    INDEX idx_group_id (group_id)
+    INDEX idx_group_id (group_id),
+    INDEX idx_reg_no (reg_no)
 ) ENGINE=InnoDB;
 
 -- Group assignments (many-to-many for teachers to groups)
@@ -102,32 +103,44 @@ CREATE TABLE attendance (
 INSERT INTO users (username, password, role) VALUES 
 ('admin', '$2y$10$XcyYRW92Ov4TRwrKwzYmwOa3.HtK7Jh1GMlEfduOtbV4E2HC21Ogm', 'admin');
 
--- Sample data for testing (optional)
--- Insert sample teacher
+-- Teachers for each group (10 lecturers)
 INSERT INTO users (username, password, role) VALUES 
-('teacher1', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'teacher');
+('teacher1', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'teacher'),
+('teacher2', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'teacher'),
+('teacher3', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'teacher'),
+('teacher4', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'teacher'),
+('teacher5', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'teacher'),
+('teacher6', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'teacher'),
+('teacher7', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'teacher'),
+('teacher8', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'teacher'),
+('teacher9', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'teacher'),
+('teacher10', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'teacher');
 
 INSERT INTO teachers (user_id, name, email, phone) VALUES 
-(2, 'John Smith', 'john.smith@school.com', '555-0101');
+(2, 'Lecturer Group 01', 'lecturer01@univ.jfn.ac.lk', '021-2218000'),
+(3, 'Lecturer Group 02', 'lecturer02@univ.jfn.ac.lk', '021-2218001'),
+(4, 'Lecturer Group 03', 'lecturer03@univ.jfn.ac.lk', '021-2218002'),
+(5, 'Lecturer Group 04', 'lecturer04@univ.jfn.ac.lk', '021-2218003'),
+(6, 'Lecturer Group 05', 'lecturer05@univ.jfn.ac.lk', '021-2218004'),
+(7, 'Lecturer Group 06', 'lecturer06@univ.jfn.ac.lk', '021-2218005'),
+(8, 'Lecturer Group 07', 'lecturer07@univ.jfn.ac.lk', '021-2218006'),
+(9, 'Lecturer Group 08', 'lecturer08@univ.jfn.ac.lk', '021-2218007'),
+(10, 'Lecturer Group 09', 'lecturer09@univ.jfn.ac.lk', '021-2218008'),
+(11, 'Lecturer Group 10', 'lecturer10@univ.jfn.ac.lk', '021-2218009');
 
--- Insert sample group
+-- Insert groups (10 groups from PDF)
 INSERT INTO groups (name, created_by) VALUES 
-('Class 10A', 1);
+('GROUP-01 (1P Physics)', 1),
+('GROUP-02 (2P Physics)', 1),
+('GROUP-03 (3P Physics)', 1),
+('GROUP-04 (4P Physics)', 1),
+('GROUP-05 (SWC)', 1),
+('GROUP-06 (1B Botany)', 1),
+('GROUP-07 (2B Botany)', 1),
+('GROUP-08 (4M Mathematics)', 1),
+('GROUP-09 (FSL Fisheries)', 1),
+('GROUP-10 (CSH Computer Science)', 1);
 
--- Insert sample students
-INSERT INTO students (name, email, phone, group_id) VALUES 
-('Alice Johnson', 'alice.j@student.com', '555-0201', 1),
-('Bob Williams', 'bob.w@student.com', '555-0202', 1),
-('Carol Davis', 'carol.d@student.com', '555-0203', 1);
-
--- Assign teacher to group
+-- Assign teachers to groups
 INSERT INTO group_assignments (group_id, teacher_id) VALUES 
-(1, 1);
-
--- Insert sample partitions
-INSERT INTO partitions (group_id, name, start_time, end_time, day_of_week) VALUES 
-(1, 'Morning Class', '09:00:00', '12:00:00', 'Monday'),
-(1, 'Morning Class', '09:00:00', '12:00:00', 'Wednesday'),
-(1, 'Morning Class', '09:00:00', '12:00:00', 'Friday'),
-(1, 'Evening Class', '14:00:00', '17:00:00', 'Tuesday'),
-(1, 'Evening Class', '14:00:00', '17:00:00', 'Thursday');
+(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7), (8, 8), (9, 9), (10, 10);
