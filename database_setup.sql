@@ -100,12 +100,12 @@ CREATE TABLE attendance (
 -- Insert default admin user
 -- Username: admin, Password: admin123 (hashed)
 INSERT INTO users (username, password, role) VALUES 
-('admin', '$2y$10$e0MYzXyjpJS7Pd0RVvHwHe6/6.N0GqvLxXLqCpJNPqLqKOTqWqmKu', 'admin');
+('admin', '$2y$10$XcyYRW92Ov4TRwrKwzYmwOa3.HtK7Jh1GMlEfduOtbV4E2HC21Ogm', 'admin');
 
 -- Sample data for testing (optional)
 -- Insert sample teacher
 INSERT INTO users (username, password, role) VALUES 
-('teacher1', '$2y$10$e0MYzXyjpJS7Pd0RVvHwHe6/6.N0GqvLxXLqCpJNPqLqKOTqWqmKu', 'teacher');
+('teacher1', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'teacher');
 
 INSERT INTO teachers (user_id, name, email, phone) VALUES 
 (2, 'John Smith', 'john.smith@school.com', '555-0101');
