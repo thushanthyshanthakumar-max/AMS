@@ -14,7 +14,7 @@ if (isLoggedIn()) {
 
 // Fetch teachers for the login selection
 try {
-    $stmt = $pdo->query("SELECT t.id, t.name, u.username FROM teachers t JOIN users u ON t.user_id = u.id ORDER BY t.name ASC");
+    $stmt = $pdo->query("SELECT t.name, u.username FROM teachers t JOIN users u ON t.user_id = u.id ORDER BY t.name ASC");
     $teachers = $stmt->fetchAll();
 } catch (PDOException $e) {
     $teachers = [];
@@ -264,7 +264,7 @@ if (isset($_GET['timeout'])) {
                 <?php else: ?>
                     <div class="teacher-grid">
                         <?php foreach ($teachers as $teacher): ?>
-                            <div class="teacher-card" onclick="selectTeacher('<?php echo htmlspecialchars($teacher['username']); ?>', '<?php echo htmlspecialchars($teacher['name']); ?>', '<?php echo $teacher['id']; ?>')">
+                            <div class="teacher-card" onclick="selectTeacher('<?php echo htmlspecialchars($teacher['username']); ?>', '<?php echo htmlspecialchars($teacher['name']); ?>')">
                                 <div class="teacher-avatar">
                                     <?php 
                                         $initials = '';
@@ -281,35 +281,6 @@ if (isset($_GET['timeout'])) {
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
-            </div>
-
-            <!-- View 2.5: Teacher Options -->
-            <div id="teacherOptions" class="view-section">
-                <button class="back-btn" onclick="showView('teacherSelection')">
-                    <i class="fas fa-arrow-left"></i> Back to Teachers
-                </button>
-                
-                <div class="selected-user-info">
-                    <i class="fas fa-user-circle selected-user-icon"></i>
-                    <h2 id="optionTeacherName">Teacher Name</h2>
-                    <p class="text-secondary">Select an action</p>
-                </div>
-
-                <div class="role-cards" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <!-- Login Option -->
-                    <div class="role-card" onclick="proceedToLogin()">
-                        <i class="fas fa-lock"></i>
-                        <h3 style="font-size: 1.5rem;">Teacher Login</h3>
-                        <p>Manage Attendance</p>
-                    </div>
-                    
-                    <!-- View Attendance Option -->
-                    <div class="role-card" onclick="proceedToView()">
-                        <i class="fas fa-eye"></i>
-                        <h3 style="font-size: 1.5rem;">View Attendance</h3>
-                        <p>Students View</p>
-                    </div>
-                </div>
             </div>
 
             <!-- View 3: Login Form -->
@@ -355,15 +326,7 @@ if (isset($_GET['timeout'])) {
         const views = {
             roleSelection: document.getElementById('roleSelection'),
             teacherSelection: document.getElementById('teacherSelection'),
-            teacherOptions: document.getElementById('teacherOptions'),
             loginFormSection: document.getElementById('loginFormSection')
-        };
-        
-        // Store selected teacher data
-        let currentTeacher = {
-            username: '',
-            name: '',
-            id: ''
         };
         
         let previousView = 'roleSelection';
@@ -372,9 +335,7 @@ if (isset($_GET['timeout'])) {
             // Hide all views
             Object.values(views).forEach(el => el.classList.remove('active'));
             // Show selected view
-            if(views[viewName]) {
-                views[viewName].classList.add('active');
-            }
+            views[viewName].classList.add('active');
         }
 
         function selectRole(role) {
@@ -387,20 +348,10 @@ if (isset($_GET['timeout'])) {
             }
         }
 
-        function selectTeacher(username, name, id) {
-            currentTeacher = { username, name, id };
-            document.getElementById('optionTeacherName').textContent = name;
-            showView('teacherOptions');
-        }
-
-        function proceedToLogin() {
-            prepareLogin(currentTeacher.username, currentTeacher.name, 'fas fa-user-circle');
-            previousView = 'teacherOptions';
+        function selectTeacher(username, name) {
+            prepareLogin(username, name, 'fas fa-user-circle');
+            previousView = 'teacherSelection';
             showView('loginFormSection');
-        }
-
-        function proceedToView() {
-            window.location.href = 'public_attendance_view.php?teacher_id=' + currentTeacher.id;
         }
 
         function prepareLogin(username, displayName, iconClass) {
