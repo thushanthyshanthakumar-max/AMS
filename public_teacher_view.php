@@ -22,7 +22,7 @@ try {
     // Fetch students and attendance stats for groups assigned to this teacher
     $query = "
         SELECT 
-            s.id, s.name, s.email, g.name as group_name,
+            s.id, s.name, g.name as group_name,
             COUNT(a.id) as total_classes,
             SUM(CASE WHEN a.status = 'present' THEN 1 ELSE 0 END) as present_count,
             SUM(CASE WHEN a.status = 'absent' THEN 1 ELSE 0 END) as absent_count,
@@ -32,7 +32,7 @@ try {
         JOIN group_assignments ga ON g.id = ga.group_id
         LEFT JOIN attendance a ON s.id = a.student_id
         WHERE ga.teacher_id = ?
-        GROUP BY s.id, s.name, s.email, g.name
+        GROUP BY s.id, s.name, g.name
         ORDER BY g.name, s.name
     ";
 
@@ -180,7 +180,6 @@ try {
                             <tr>
                                 <td>
                                     <div style="font-weight: 500;"><?php echo htmlspecialchars($student['name']); ?></div>
-                                    <div style="font-size: 0.8rem; color: #666;"><?php echo htmlspecialchars($student['email']); ?></div>
                                 </td>
                                 <td><?php echo htmlspecialchars($student['group_name']); ?></td>
                                 <td style="color: var(--success-color);"><?php echo $student['present_count']; ?></td>
