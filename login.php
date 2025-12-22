@@ -14,7 +14,7 @@ if (isLoggedIn()) {
 
 // Fetch teachers for the login selection
 try {
-    $stmt = $pdo->query("SELECT t.name, u.username FROM teachers t JOIN users u ON t.user_id = u.id ORDER BY t.name ASC");
+    $stmt = $pdo->query("SELECT t.id, t.name, u.username FROM teachers t JOIN users u ON t.user_id = u.id ORDER BY t.name ASC");
     $teachers = $stmt->fetchAll();
 } catch (PDOException $e) {
     $teachers = [];
@@ -212,6 +212,57 @@ if (isset($_GET['timeout'])) {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        .teacher-info {
+            cursor: pointer;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1rem;
+            transition: opacity 0.2s;
+        }
+        
+        .teacher-info:hover {
+            opacity: 0.8;
+        }
+
+        .teacher-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 0.6rem 0.5rem;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .btn-action.login {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-action.view {
+            background: #64748b;
+            color: white;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            filter: brightness(110%);
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -264,19 +315,29 @@ if (isset($_GET['timeout'])) {
                 <?php else: ?>
                     <div class="teacher-grid">
                         <?php foreach ($teachers as $teacher): ?>
-                            <div class="teacher-card" onclick="selectTeacher('<?php echo htmlspecialchars($teacher['username']); ?>', '<?php echo htmlspecialchars($teacher['name']); ?>')">
-                                <div class="teacher-avatar">
-                                    <?php 
-                                        $initials = '';
-                                        $parts = explode(' ', $teacher['name']);
-                                        foreach ($parts as $part) {
-                                            if (strlen($part) > 0) $initials .= $part[0];
-                                            if (strlen($initials) >= 2) break;
-                                        }
-                                        echo strtoupper($initials);
-                                    ?>
+                            <div class="teacher-card">
+                                <div class="teacher-info" onclick="selectTeacher('<?php echo htmlspecialchars($teacher['username'] ?? ''); ?>', '<?php echo htmlspecialchars($teacher['name']); ?>')">
+                                    <div class="teacher-avatar">
+                                        <?php 
+                                            $initials = '';
+                                            $parts = explode(' ', $teacher['name']);
+                                            foreach ($parts as $part) {
+                                                if (strlen($part) > 0) $initials .= $part[0];
+                                                if (strlen($initials) >= 2) break;
+                                            }
+                                            echo strtoupper($initials);
+                                        ?>
+                                    </div>
+                                    <h3><?php echo htmlspecialchars($teacher['name']); ?></h3>
                                 </div>
-                                <h3><?php echo htmlspecialchars($teacher['name']); ?></h3>
+                                <div class="teacher-actions">
+                                    <button class="btn-action login" onclick="selectTeacher('<?php echo htmlspecialchars($teacher['username'] ?? ''); ?>', '<?php echo htmlspecialchars($teacher['name']); ?>')">
+                                        <i class="fas fa-sign-in-alt"></i> Login
+                                    </button>
+                                    <a href="public_attendance_view.php?teacher_id=<?php echo $teacher['id']; ?>" class="btn-action view">
+                                        <i class="fas fa-list-alt"></i> View Attendance
+                                    </a>
+                                </div>
                             </div>
                         <?php endforeach; ?>
                     </div>
