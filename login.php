@@ -91,7 +91,7 @@ if (isset($_GET['timeout'])) {
                         placeholder="Enter your username"
                         required
                         autofocus
-                        value="<?php echo isset($_POST['username']) ? htmlspecialchars($_POST['username']) : ''; ?>"
+                        value="<?php echo isset($_POST['username']) ? htmlspecialchars($_POST['username']) : (isset($_GET['username']) ? htmlspecialchars($_GET['username']) : ''); ?>"
                     >
                 </div>
                 
@@ -113,6 +113,12 @@ if (isset($_GET['timeout'])) {
                     <i class="fas fa-sign-in-alt"></i> Login
                 </button>
             </form>
+
+            <div style="margin-top: 1rem;">
+                <a href="public_teachers.php" class="btn btn-secondary btn-block" style="background: transparent; border: 2px solid var(--primary-color); color: var(--primary-color); text-align: center; display: block; padding: 0.8rem; text-decoration: none; border-radius: 4px; font-weight: 500;">
+                    <i class="fas fa-chalkboard-teacher"></i> View Teachers & Attendance
+                </a>
+            </div>
             
             <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 2px solid var(--border-color); text-align: center; color: var(--text-secondary); font-size: 0.875rem;">
                 <p><strong>Default Login Credentials:</strong></p>
