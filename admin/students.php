@@ -50,21 +50,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Get all students
+// Pagination settings
+$limit = 20;
+$page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+$offset = ($page - 1) * $limit;
+
+// Get total students for pagination
 try {
-    $stmt = $pdo->query("
+    $totalStudents = $pdo->query("SELECT COUNT(*) FROM students")->fetchColumn();
+    $totalPages = ceil($totalStudents / $limit);
+
+    // Get paginated students
+    $stmt = $pdo->prepare("
         SELECT s.*, g.name as group_name
         FROM students s
         JOIN groups g ON s.group_id = g.id
         ORDER BY s.created_at DESC
+        LIMIT :limit OFFSET :offset
     ");
+    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+    $stmt->execute();
     $students = $stmt->fetchAll();
     
     // Get all groups for dropdown
     $stmt = $pdo->query("SELECT id, name FROM groups ORDER BY name");
     $groups = $stmt->fetchAll();
 } catch (PDOException $e) {
-    setFlashMessage('danger', 'Error loading students.');
+    setFlashMessage('danger', 'Error loading students: ' . $e->getMessage());
     $students = [];
     $groups = [];
 }
@@ -180,6 +193,52 @@ $preselectedGroup = isset($_GET['group_id']) ? (int)$_GET['group_id'] : null;
                     </tbody>
                 </table>
             </div>
+
+            <?php if ($totalPages > 1): ?>
+                <div class="pagination-container" style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e2e8f0; flex-wrap: wrap; gap: 1rem;">
+                    <div style="color: #64748b; font-size: 0.9rem; font-weight: 500;">
+                        Showing <span style="color: #1e293b; font-weight: 700;"><?php echo $offset + 1; ?></span> 
+                        to <span style="color: #1e293b; font-weight: 700;"><?php echo min($offset + $limit, $totalStudents); ?></span> 
+                        of <span style="color: #1e293b; font-weight: 700;"><?php echo $totalStudents; ?></span> students
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <?php if ($page > 1): ?>
+                            <a href="?page=<?php echo $page - 1; ?>" class="btn btn-sm" style="background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0;">
+                                <i class="fas fa-chevron-left" style="font-size: 0.8rem;"></i>
+                            </a>
+                        <?php endif; ?>
+
+                        <?php
+                        $start = max(1, $page - 2);
+                        $end = min($totalPages, $page + 2);
+                        
+                        if ($start > 1) {
+                            echo '<a href="?page=1" class="btn btn-sm" style="background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; width: 32px; display: flex; align-items: center; justify-content: center;">1</a>';
+                            if ($start > 2) echo '<span style="color: #cbd5e1;">...</span>';
+                        }
+
+                        for ($i = $start; $i <= $end; $i++):
+                        ?>
+                            <a href="?page=<?php echo $i; ?>" class="btn btn-sm" style="<?php echo $i === $page ? 'background: var(--primary-color); color: white; border: 1px solid var(--primary-color);' : 'background: white; color: #475569; border: 1px solid #e2e8f0;'; ?> min-width: 32px; display: flex; align-items: center; justify-content: center; font-weight: <?php echo $i === $page ? '700' : '500'; ?>;">
+                                <?php echo $i; ?>
+                            </a>
+                        <?php endfor; ?>
+
+                        <?php
+                        if ($end < $totalPages) {
+                            if ($end < $totalPages - 1) echo '<span style="color: #cbd5e1;">...</span>';
+                            echo '<a href="?page=' . $totalPages . '" class="btn btn-sm" style="background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; width: 32px; display: flex; align-items: center; justify-content: center;">' . $totalPages . '</a>';
+                        }
+                        ?>
+
+                        <?php if ($page < $totalPages): ?>
+                            <a href="?page=<?php echo $page + 1; ?>" class="btn btn-sm" style="background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0;">
+                                <i class="fas fa-chevron-right" style="font-size: 0.8rem;"></i>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
         <?php endif; ?>
     </div>
 </div>
