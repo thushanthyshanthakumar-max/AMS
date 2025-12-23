@@ -59,395 +59,429 @@ $selectedPartitionId = isset($_GET['partition_id']) ? (int)$_GET['partition_id']
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.9);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            --surface-bg: #f8fafc;
         }
 
         body {
-            font-family: 'Outfit', sans-serif;
-            background: #f8fafc;
-            color: #1e293b;
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #4f46e5;
+            background-image:
+                radial-gradient(at 0% 0%, #4338ca 0px, transparent 50%),
+                radial-gradient(at 100% 0%, #7c3aed 0px, transparent 50%),
+                radial-gradient(at 100% 100%, #1e1b4b 0px, transparent 50%),
+                radial-gradient(at 0% 100%, #312e81 0px, transparent 50%);
+            background-attachment: fixed;
             min-height: 100vh;
+            color: #1e293b;
+            margin: 0;
         }
 
         .page-header {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 1.25rem 2rem;
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
-            padding: 1.5rem 1rem;
+            padding: 2.5rem 1.5rem;
         }
 
-        /* Lecturer Banner */
+        /* Hero Banner */
         .premium-banner {
-            background: var(--accent-gradient);
-            padding: 2.5rem 2rem;
-            border-radius: 24px;
-            color: white;
+            background: #0f172a;
+            padding: 3.5rem 2.5rem;
+            border-radius: 30px;
             position: relative;
             overflow: hidden;
-            margin-bottom: 2rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            margin-bottom: 3rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
 
-        .premium-banner::before {
+        .premium-banner::after {
             content: '';
             position: absolute;
-            top: -50%;
-            right: -10%;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
-            border-radius: 50%;
+            top: 0; right: 0; bottom: 0; left: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 86c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm66-3c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm-40-39c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm50 38c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM21 39c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm56-38c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM9.5 54c.276 0 .5-.224.5-.5s-.224-.5-.5-.5-.5.224-.5.5.224.5.5.5zM75.4 49c.276 0 .5-.224.5-.5s-.224-.5-.5-.5-.5.224-.5.5.224.5.5.5zM27.7 97c.276 0 .5-.224.5-.5s-.224-.5-.5-.5-.5.224-.5.5.224.5.5.5zM3.5 17c.138 0 .25-.112.25-.25s-.112-.25-.25-.25-.25.112-.25.25.112.25.25.25zM96.7 57c.138 0 .25-.112.25-.25s-.112-.25-.25-.25-.25.112-.25.25.112.25.25.25zM11.1 60c.138 0 .25-.112.25-.25s-.112-.25-.25-.25-.25.112-.25.25.112.25.25.25zM5.2 76c.069 0 .125-.056.125-.125s-.056-.125-.125-.125-.125.056-.125.125.125.056.125.125zm90.7-34c.069 0 .125-.056.125-.125s-.056-.125-.125-.125-.125.056-.125.125.125.056.125.125z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.5;
         }
 
         .banner-content {
             position: relative;
-            z-index: 1;
+            z-index: 2;
             display: flex;
             align-items: center;
-            gap: 1.5rem;
+            gap: 2.5rem;
         }
 
-        .lecturer-avatar-large {
-            width: 70px;
-            height: 70px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.4);
-            border-radius: 20px;
+        .banner-icon-bg {
+            width: 90px;
+            height: 90px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
-            backdrop-filter: blur(5px);
+            font-size: 2.5rem;
+            color: #818cf8;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
         .banner-text h1 {
             margin: 0;
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        /* Controls Section */
-        .control-panel {
+        /* Control Panel */
+        .controls-wrapper {
             background: white;
             padding: 1.5rem;
-            border-radius: 20px;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
+            border-radius: 24px;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 2rem;
+            align-items: center;
         }
 
-        @media (min-width: 768px) {
-            .control-panel {
-                flex-direction: row;
-                align-items: center;
-                justify-content: space-between;
-            }
-        }
-
-        .date-picker-wrap {
+        .date-btn {
+            background: #f1f5f9;
+            border: 2px solid #e2e8f0;
+            padding: 0.75rem 1.25rem;
+            border-radius: 14px;
+            font-weight: 700;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 10px;
         }
 
-        .custom-input {
-            border: 2px solid #f1f5f9;
-            background: #f8fafc;
-            padding: 0.75rem 1rem;
-            border-radius: 12px;
-            font-family: inherit;
-            font-weight: 500;
-            transition: all 0.2s;
-            outline: none;
-        }
-
-        .custom-input:focus {
+        .date-btn:hover {
             border-color: #6366f1;
+            color: #6366f1;
             background: white;
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
         }
 
-        /* Search Section */
-        .search-container {
+        .search-inner {
             position: relative;
-            flex: 1;
-            max-width: 400px;
         }
 
-        .search-container i {
+        .search-inner i {
             position: absolute;
-            left: 1rem;
+            left: 1.25rem;
             top: 50%;
             transform: translateY(-50%);
             color: #94a3b8;
+            font-size: 1.1rem;
         }
 
-        .search-input {
+        .search-pill {
             width: 100%;
-            padding: 0.75rem 1rem 0.75rem 2.75rem;
-            border: 2px solid #f1f5f9;
+            padding: 1rem 1rem 1rem 3.5rem;
             background: #f8fafc;
-            border-radius: 12px;
+            border: 2px solid #f1f5f9;
+            border-radius: 16px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #1e293b;
             outline: none;
             transition: all 0.2s;
         }
 
-        /* Class Selection */
-        .class-pills {
+        .search-pill:focus {
+            background: white;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        /* Session Navigation */
+        .session-track {
             display: flex;
-            gap: 0.75rem;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
             overflow-x: auto;
-            padding-bottom: 0.5rem;
-            margin-bottom: 2rem;
+            padding-bottom: 1rem;
             scrollbar-width: none;
         }
 
-        .class-pills::-webkit-scrollbar { display: none; }
-
-        .pill {
+        .session-card {
             background: white;
-            padding: 0.8rem 1.25rem;
-            border-radius: 14px;
+            padding: 1rem 2rem;
+            border-radius: 18px;
             white-space: nowrap;
             text-decoration: none;
             color: #64748b;
-            font-weight: 600;
-            font-size: 0.95rem;
+            font-weight: 700;
             border: 2px solid transparent;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            transition: all 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .session-card:hover {
+            transform: translateY(-4px);
+            color: #6366f1;
+            border-color: rgba(99, 102, 241, 0.2);
+        }
+
+        .session-card.active {
+            background: #6366f1;
+            color: white;
+            box-shadow: 0 15px 30px -10px rgba(99, 102, 241, 0.5);
+            transform: translateY(-4px);
+        }
+
+        /* Student Grid */
+        .record-stack {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .student-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 24px;
+            border: 1px solid #f1f5f9;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .student-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+            border-color: #e2e8f0;
+        }
+
+        .student-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        .student-bio {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-        }
-
-        .pill:hover {
-            transform: translateY(-2px);
-            color: #4f46e5;
-        }
-
-        .pill.active {
-            background: #4f46e5;
-            color: white;
-            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
-        }
-
-        /* Student Record Rendering */
-        .student-grid {
-            display: grid;
             gap: 1rem;
         }
 
-        .student-card {
-            background: white;
-            padding: 1.25rem;
-            border-radius: 20px;
+        .avatar-circle {
+            width: 48px;
+            height: 48px;
+            background: #f1f5f9;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #6366f1;
+            font-size: 0.9rem;
+        }
+
+        .student-name {
+            font-weight: 800;
+            color: #1e293b;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .student-id {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-badge {
+            padding: 0.6rem 1rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-badge.present { background: #dcfce7; color: #15803d; }
+        .status-badge.absent { background: #fee2e2; color: #b91c1c; }
+        .status-badge.late { background: #fef3c7; color: #b45309; }
+        .status-badge.unknown { background: #f1f5f9; color: #64748b; }
+
+        .performance-section {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            transition: all 0.2s;
-            border: 1px solid #f1f5f9;
-        }
-
-        .student-card:hover {
-            border-color: #e2e8f0;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
-        }
-
-        .student-main-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .reg-badge {
-            background: #f1f5f9;
-            color: #475569;
-            padding: 0.4rem 0.75rem;
-            border-radius: 10px;
-            font-family: monospace;
-            font-weight: 700;
-            font-size: 0.85rem;
-        }
-
-        .student-details h4 {
-            margin: 0;
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: #1e293b;
-        }
-
-        .student-details p {
-            margin: 0;
-            font-size: 0.8rem;
-            color: #94a3b8;
-            font-weight: 500;
-        }
-
-        .status-pill {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.5rem 1rem;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            font-weight: 700;
-        }
-
-        .status-pill.p { background: #dcfce7; color: #166534; }
-        .status-pill.a { background: #fee2e2; color: #991b1b; }
-        .status-pill.l { background: #fef3c7; color: #92400e; }
-        .status-pill.u { background: #f1f5f9; color: #64748b; }
-
-        /* Stats in Card */
-        .mini-stats {
-            display: flex;
-            gap: 0.4rem;
-            margin-top: 0.5rem;
-        }
-
-        .mini-badge {
-            font-size: 0.7rem;
-            padding: 0.2rem 0.5rem;
             background: #f8fafc;
-            border-radius: 6px;
-            color: #64748b;
-            font-weight: 600;
-            border: 1px solid #f1f5f9;
+            padding: 1rem;
+            border-radius: 16px;
         }
 
-        /* Percentage indicator on card */
-        .pct-circle {
-            width: 45px;
-            height: 45px;
+        .stat-group {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-weight: 800;
+            color: #475569;
+            font-size: 0.9rem;
+        }
+
+        .percentage-indicator {
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.8rem;
-            font-weight: 700;
-            border: 3px solid #e2e8f0;
-            position: relative;
+            font-weight: 800;
+            font-size: 0.85rem;
+            border: 4px solid #e2e8f0;
         }
 
-        .pct-circle::after {
-            content: '';
-            position: absolute;
-            top: -3px; left: -3px; bottom: -3px; right: -3px;
-            border-radius: 50%;
-            border: 3px solid transparent;
-            border-top-color: #6366f1;
-            transform: rotate(calc(var(--pct) * 3.6deg));
-            display: none; /* Dynamic would need SVG usually */
-        }
+        .percentage-indicator.high { border-color: #10b981; color: #059669; }
+        .percentage-indicator.medium { border-color: #f59e0b; color: #d97706; }
+        .percentage-indicator.low { border-color: #ef4444; color: #dc2626; }
 
-        .empty-state {
+        .empty-visual {
             text-align: center;
-            padding: 4rem 2rem;
+            padding: 6rem 2rem;
             background: white;
-            border-radius: 24px;
+            border-radius: 32px;
             color: #94a3b8;
+            border: 2px dashed #e2e8f0;
         }
 
-        .empty-state i {
-            display: block;
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        @media (max-width: 768px) {
+            .controls-wrapper {
+                grid-template-columns: 1fr;
+            }
+            .premium-banner {
+                padding: 2.5rem 1.5rem;
+            }
+            .banner-content {
+                flex-direction: column;
+                text-align: center;
+            }
         }
     </style>
 </head>
 <body>
 
     <header class="page-header">
-        <div style="display: flex; align-items: center; gap: 0.75rem;">
-            <i class="fas fa-graduation-cap" style="font-size: 1.5rem; color: #6366f1;"></i>
-            <span style="font-weight: 800; font-size: 1.2rem; letter-spacing: -0.02em;"><?php echo APP_NAME; ?></span>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 40px; height: 40px; background: #6366f1; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);">
+                <i class="fas fa-fingerprint" style="color: white; font-size: 1.2rem;"></i>
+            </div>
+            <span style="font-weight: 900; font-size: 1.4rem; letter-spacing: -0.04em; color: #0f172a;"><?php echo APP_NAME; ?></span>
         </div>
-        <a href="login.php" style="text-decoration: none; color: #64748b; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem;">
-            <span>Staff Portal</span>
-            <i class="fas fa-arrow-right"></i>
+        <a href="login.php" style="text-decoration: none; color: #6366f1; font-weight: 800; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; background: rgba(99, 102, 241, 0.1); padding: 0.6rem 1.2rem; border-radius: 12px; transition: all 0.2s;">
+            <span>Staff Engine</span>
+            <i class="fas fa-shuttle-space"></i>
         </a>
     </header>
 
     <div class="container">
-        <!-- Premium Banner -->
+        <!-- Hero Section -->
         <div class="premium-banner">
             <div class="banner-content">
-                <div class="lecturer-avatar-large">
-                    <i class="fas fa-user-tie"></i>
+                <div class="banner-icon-bg">
+                    <i class="fas fa-id-card-clip"></i>
                 </div>
                 <div class="banner-text">
-                    <p style="text-transform: uppercase; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; opacity: 0.8; margin-bottom: 0.2rem;">Attendance Hub</p>
+                    <div style="font-weight: 800; font-size: 0.8rem; text-transform: uppercase; color: #818cf8; letter-spacing: 0.2em; margin-bottom: 8px;">Academic Roster</div>
                     <h1><?php echo htmlspecialchars($lecturer['name']); ?></h1>
-                    <div style="display: flex; align-items: center; gap: 1rem; margin-top: 0.5rem; font-size: 0.9rem; opacity: 0.9;">
-                        <span><i class="fas fa-calendar-day"></i> <?php echo date('D, M d', strtotime($selectedDate)); ?></span>
-                        <span><i class="fas fa-clock"></i> <?php echo date('h:i A'); ?></span>
-                    </div>
+                    <p style="margin: 8px 0 0 0; color: rgba(255,255,255,0.5); font-weight: 600; display: flex; align-items: center; gap: 15px;">
+                        <span><i class="fas fa-calendar-check" style="color: #818cf8;"></i> <?php echo date('l, F j', strtotime($selectedDate)); ?></span>
+                        <span style="width: 4px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 50%;"></span>
+                        <span><i class="fas fa-location-dot" style="color: #818cf8;"></i> Live Monitoring</span>
+                    </p>
                 </div>
             </div>
         </div>
 
-        <!-- Control Panel -->
-        <div class="control-panel">
-            <form method="GET" class="date-picker-wrap">
+        <!-- Dashboard Controls -->
+        <div class="controls-wrapper">
+            <form method="GET" id="dateForm">
                 <input type="hidden" name="lecturer_id" value="<?php echo $lecturerId; ?>">
-                <input type="date" name="date" class="custom-input" value="<?php echo $selectedDate; ?>" onchange="this.form.submit()">
+                <label for="date_trigger" class="date-btn">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span><?php echo date('d M Y', strtotime($selectedDate)); ?></span>
+                    <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
+                </label>
+                <input type="date" id="date_trigger" name="date" class="custom-input" value="<?php echo $selectedDate; ?>" onchange="this.form.submit()" style="position: absolute; opacity: 0; width: 0; height: 0;">
             </form>
 
             <?php if ($selectedPartitionId): ?>
-            <div class="search-container">
-                <i class="fas fa-search"></i>
-                <input type="text" id="studentSearch" class="search-input" placeholder="Find by ID or Name..." onkeyup="filterStudents()">
+            <div class="search-inner">
+                <i class="fas fa-magnifying-glass"></i>
+                <input type="text" id="studentSearch" class="search-pill" placeholder="Locate student by name or registration ID..." onkeyup="filterStudents()">
             </div>
             <?php endif; ?>
         </div>
 
-        <!-- Class Selection Pills -->
+        <!-- Academic Sessions -->
         <?php if (!empty($partitions)): ?>
-            <div class="class-pills">
+            <div class="session-track">
                 <?php foreach ($partitions as $p): 
                     $isActive = ($selectedPartitionId == $p['id']);
                 ?>
-                    <a href="?lecturer_id=<?php echo $lecturerId; ?>&date=<?php echo $selectedDate; ?>&partition_id=<?php echo $p['id']; ?>" class="pill <?php echo $isActive ? 'active' : ''; ?>">
-                        <i class="fas fa-chalkboard"></i>
-                        <span><?php echo htmlspecialchars($p['name']); ?></span>
-                        <span style="font-size: 0.7rem; opacity: 0.7; font-weight: 400;">
-                            <?php echo date('g:i A', strtotime($p['start_time'])); ?>
+                    <a href="?lecturer_id=<?php echo $lecturerId; ?>&date=<?php echo $selectedDate; ?>&partition_id=<?php echo $p['id']; ?>" class="session-card <?php echo $isActive ? 'active' : ''; ?>">
+                        <span style="font-size: 0.7rem; opacity: 0.7; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
+                            <?php echo date('H:i', strtotime($p['start_time'])); ?> Session
                         </span>
+                        <span><i class="fas fa-layer-group" style="margin-right: 6px;"></i> <?php echo htmlspecialchars($p['name']); ?></span>
                     </a>
                 <?php endforeach; ?>
             </div>
         <?php else: ?>
-            <div class="empty-state">
-                <i class="fas fa-calendar-times"></i>
-                <h3>No Classes Today</h3>
-                <p>Enjoy your break! No sessions are scheduled for this date.</p>
+            <div class="empty-visual">
+                <i class="fas fa-calendar-day" style="font-size: 4rem; margin-bottom: 1.5rem; display: block;"></i>
+                <h3 style="color: #1e293b; font-weight: 800; margin-bottom: 8px;">Zero Sessions Scheduled</h3>
+                <p style="font-weight: 600; margin: 0;">There are no academic partitions listed for this date.</p>
             </div>
         <?php endif; ?>
 
-        <!-- Student Attendance List -->
+        <!-- Attendance Ledger -->
         <?php if ($selectedPartitionId): 
-            // Data logic (duplicated/refined from previous version)
             $students = [];
             $summaryMap = [];
             $totalClassesHeld = 0;
@@ -479,43 +513,55 @@ $selectedPartitionId = isset($_GET['partition_id']) ? (int)$_GET['partition_id']
         ?>
             
             <?php if (!empty($students)): ?>
-                <div class="student-grid" id="studentGrid">
+                <div class="record-stack" id="studentGrid">
                     <?php foreach ($students as $student): 
                         $status = $attendanceMap[$student['id']] ?? 'unknown';
                         $summary = $summaryMap[$student['id']] ?? ['p' => 0, 'l' => 0, 'a' => 0];
                         $attended = (int)$summary['p'] + (int)$summary['l'];
                         $percentage = ($totalClassesHeld > 0) ? round(($attended / $totalClassesHeld) * 100) : 0;
                         
-                        // Status styling
-                        $pillChar = 'u'; $pillLabel = 'Pending';
-                        if ($status === 'present') { $pillChar = 'p'; $pillLabel = 'Present'; }
-                        if ($status === 'absent') { $pillChar = 'a'; $pillLabel = 'Absent'; }
-                        if ($status === 'late') { $pillChar = 'l'; $pillLabel = 'Late'; }
+                        $statusClass = $status;
+                        $statusLabel = ucfirst($status);
+                        if ($status === 'unknown') $statusLabel = 'Pending';
                     ?>
-                        <div class="student-card" data-name="<?php echo strtolower($student['name']); ?>" data-reg="<?php echo strtolower($student['reg_no']); ?>">
-                            <div class="student-main-info">
-                                <div class="reg-badge"><?php echo htmlspecialchars($student['reg_no']); ?></div>
-                                <div class="student-details">
-                                    <h4><?php echo htmlspecialchars($student['name']); ?></h4>
-                                    <div class="mini-stats">
-                                        <div class="mini-badge">P: <?php echo $summary['p']; ?></div>
-                                        <div class="mini-badge">L: <?php echo $summary['l']; ?></div>
-                                        <div class="mini-badge">A: <?php echo $summary['a']; ?></div>
+                        <div class="student-item" data-name="<?php echo strtolower($student['name']); ?>" data-reg="<?php echo strtolower($student['reg_no']); ?>">
+                            <div class="student-header">
+                                <div class="student-bio">
+                                    <div class="avatar-circle">
+                                        <?php echo substr($student['reg_no'], -2); ?>
                                     </div>
+                                    <div>
+                                        <h4 class="student-name"><?php echo htmlspecialchars($student['name']); ?></h4>
+                                        <div class="student-id"><?php echo htmlspecialchars($student['reg_no']); ?></div>
+                                    </div>
+                                </div>
+                                <div class="status-badge <?php echo $statusClass; ?>">
+                                    <i class="fas <?php 
+                                        if ($status === 'present') echo 'fa-check-circle';
+                                        elseif ($status === 'absent') echo 'fa-times-circle';
+                                        elseif ($status === 'late') echo 'fa-clock';
+                                        else echo 'fa-circle-notch fa-spin';
+                                    ?>"></i>
+                                    <span><?php echo $statusLabel; ?></span>
                                 </div>
                             </div>
                             
-                            <div style="display: flex; align-items: center; gap: 1.5rem;">
-                                <div class="status-pill <?php echo $pillChar; ?>">
-                                    <i class="fas <?php 
-                                        if ($pillChar == 'p') echo 'fa-check-circle';
-                                        elseif ($pillChar == 'a') echo 'fa-times-circle';
-                                        elseif ($pillChar == 'l') echo 'fa-clock';
-                                        else echo 'fa-question-circle';
-                                    ?>"></i>
-                                    <span><?php echo $pillLabel; ?></span>
+                            <div class="performance-section">
+                                <div style="display: flex; gap: 1.5rem;">
+                                    <div class="stat-group">
+                                        <span class="stat-label">Present</span>
+                                        <span class="stat-value" style="color: #10b981;"><?php echo $summary['p']; ?></span>
+                                    </div>
+                                    <div class="stat-group">
+                                        <span class="stat-label">Late</span>
+                                        <span class="stat-value" style="color: #f59e0b;"><?php echo $summary['l']; ?></span>
+                                    </div>
+                                    <div class="stat-group">
+                                        <span class="stat-label">Absent</span>
+                                        <span class="stat-value" style="color: #ef4444;"><?php echo $summary['a']; ?></span>
+                                    </div>
                                 </div>
-                                <div class="pct-circle" style="color: <?php echo ($percentage >= 75) ? '#166534' : '#991b1b'; ?>;">
+                                <div class="percentage-indicator <?php echo ($percentage >= 75) ? 'high' : (($percentage >= 50) ? 'medium' : 'low'); ?>">
                                     <?php echo $percentage; ?>%
                                 </div>
                             </div>
@@ -523,10 +569,10 @@ $selectedPartitionId = isset($_GET['partition_id']) ? (int)$_GET['partition_id']
                     <?php endforeach; ?>
                 </div>
             <?php else: ?>
-                <div class="empty-state">
-                    <i class="fas fa-users-slash"></i>
-                    <h3>No Records</h3>
-                    <p>No students are currently enrolled in this group.</p>
+                <div class="empty-visual" style="border-style: solid; background: white;">
+                    <i class="fas fa-users-slash" style="font-size: 3.5rem; color: #f1f5f9;"></i>
+                    <h3 style="color: #475569; font-weight: 800; margin-top: 1rem;">Roster Vacant</h3>
+                    <p style="color: #94a3b8; font-weight: 600;">No students are registered in this academic group.</p>
                 </div>
             <?php endif; ?>
 
@@ -537,7 +583,7 @@ $selectedPartitionId = isset($_GET['partition_id']) ? (int)$_GET['partition_id']
     <script>
         function filterStudents() {
             const input = document.getElementById('studentSearch').value.toLowerCase();
-            const cards = document.querySelectorAll('.student-card');
+            const cards = document.querySelectorAll('.student-item');
             
             cards.forEach(card => {
                 const name = card.getAttribute('data-name');
@@ -545,6 +591,7 @@ $selectedPartitionId = isset($_GET['partition_id']) ? (int)$_GET['partition_id']
                 
                 if (name.includes(input) || reg.includes(input)) {
                     card.style.display = 'flex';
+                    card.style.animation = 'fadeIn 0.4s easeOut';
                 } else {
                     card.style.display = 'none';
                 }

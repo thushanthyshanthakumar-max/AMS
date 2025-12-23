@@ -47,7 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
-?>
 // Get all groups
 try {
     $stmt = $pdo->query("SELECT id, name FROM groups ORDER BY name");
@@ -103,199 +102,27 @@ try {
 $selectedDay = isset($_GET['day']) ? $_GET['day'] : 'Monday';
 ?>
 
-<style>
-.week-calendar {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
-
-.day-card {
-    background: white;
-    border-radius: var(--radius-lg);
-    padding: 1.5rem;
-    text-align: center;
-    cursor: pointer;
-    transition: var(--transition);
-    border: 3px solid transparent;
-    box-shadow: var(--shadow-sm);
-}
-
-.day-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--primary-light);
-}
-
-.day-card.active {
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-    color: white;
-    border-color: var(--primary-dark);
-    box-shadow: var(--shadow-xl);
-}
-
-.day-name {
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-}
-
-.day-count {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 0.25rem;
-}
-
-.day-label {
-    font-size: 0.875rem;
-    opacity: 0.8;
-}
-
-.time-slot-card {
-    background: white;
-    border-left: 5px solid var(--primary-color);
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-md);
-    transition: var(--transition);
-}
-
-.time-slot-card:hover {
-    box-shadow: var(--shadow-lg);
-    transform: translateX(5px);
-}
-
-.slot-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: 2px solid var(--border-color);
-}
-
-.slot-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.slot-time {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--text-secondary);
-    font-size: 1rem;
-    font-weight: 600;
-}
-
-.groups-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    margin-top: 1rem;
-}
-
-.group-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: linear-gradient(135deg, var(--primary-light), var(--primary-color));
-    color: white;
-    border-radius: var(--radius-md);
-    font-size: 0.875rem;
-    font-weight: 600;
-    box-shadow: var(--shadow-sm);
-    transition: var(--transition);
-}
-
-.group-badge:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-}
-
-.group-badge button {
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    color: white;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: var(--transition);
-    padding: 0;
-    font-size: 0.75rem;
-}
-
-.group-badge button:hover {
-    background: rgba(255, 255, 255, 0.4);
-}
-
-.add-group-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: var(--light-color);
-    color: var(--text-primary);
-    border: 2px dashed var(--border-color);
-    border-radius: var(--radius-md);
-    font-size: 0.875rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.add-group-btn:hover {
-    background: var(--primary-light);
-    color: white;
-    border-color: var(--primary-color);
-}
-
-.empty-state {
-    text-align: center;
-    padding: 3rem;
-    color: var(--text-secondary);
-}
-
-.empty-state i {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-    opacity: 0.3;
-}
-
-@media (max-width: 1024px) {
-    .week-calendar {
-        grid-template-columns: repeat(4, 1fr);
-    }
-}
-
-@media (max-width: 768px) {
-    .week-calendar {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-</style>
-
-<div class="card">
-    <div class="card-header">
-        <h2><i class="fas fa-calendar-alt"></i> Weekly Class Schedule</h2>
-        <button onclick="openModal('createPartitionModal')" class="btn btn-primary btn-sm">
-            <i class="fas fa-plus"></i> Add Time Slot
-        </button>
+<div class="premium-banner">
+    <div class="banner-content">
+        <div class="banner-icon-wrapper">
+            <i class="fas fa-calendar-alt"></i>
+        </div>
+        <div class="banner-text">
+            <h1>Academic Schedule</h1>
+            <p>Configure time slots and class sessions for the semester</p>
+        </div>
+        <div class="banner-actions">
+            <button onclick="openModal('createPartitionModal')" class="btn btn-primary">
+                <i class="fas fa-plus"></i> New Time Slot
+            </button>
+        </div>
     </div>
-    <div class="card-body">
-        <!-- Week Calendar -->
-        <div class="week-calendar">
+</div>
+
+<div class="card" style="background: transparent; border: none; box-shadow: none;">
+    <div class="card-body" style="padding: 0;">
+        <!-- Week Calendar View -->
+        <div class="week-calendar" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 1rem; margin-bottom: 2.5rem;">
             <?php 
             $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
             foreach ($days as $day): 
@@ -303,10 +130,28 @@ $selectedDay = isset($_GET['day']) ? $_GET['day'] : 'Monday';
                 $isActive = ($selectedDay === $day);
             ?>
                 <a href="?day=<?php echo $day; ?>" style="text-decoration: none;">
-                    <div class="day-card <?php echo $isActive ? 'active' : ''; ?>">
-                        <div class="day-name"><?php echo substr($day, 0, 3); ?></div>
-                        <div class="day-count"><?php echo $count; ?></div>
-                        <div class="day-label"><?php echo $count === 1 ? 'slot' : 'slots'; ?></div>
+                    <div class="day-card" style="
+                        background: <?php echo $isActive ? 'var(--accent-gradient)' : 'white'; ?>;
+                        color: <?php echo $isActive ? 'white' : '#1e293b'; ?>;
+                        padding: 1.5rem 1rem;
+                        border-radius: 24px;
+                        text-align: center;
+                        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                        border: 1px solid <?php echo $isActive ? 'transparent' : '#f1f5f9'; ?>;
+                        box-shadow: <?php echo $isActive ? '0 20px 25px -5px rgba(99, 102, 241, 0.4)' : '0 4px 6px -1px rgba(0,0,0,0.05)'; ?>;
+                        position: relative;
+                        overflow: hidden;
+                    ">
+                        <?php if ($isActive): ?>
+                            <div style="position: absolute; top: -10px; right: -10px; width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 50%; blur: 10px;"></div>
+                        <?php endif; ?>
+                        <div style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; opacity: <?php echo $isActive ? '0.9' : '0.5'; ?>;">
+                            <?php echo substr($day, 0, 3); ?>
+                        </div>
+                        <div style="font-size: 1.75rem; font-weight: 800; line-height: 1;"><?php echo $count; ?></div>
+                        <div style="font-size: 0.75rem; font-weight: 600; margin-top: 0.25rem; opacity: <?php echo $isActive ? '0.8' : '0.4'; ?>;">
+                            SLOTS
+                        </div>
                     </div>
                 </a>
             <?php endforeach; ?>

@@ -86,54 +86,94 @@ if (isset($_GET['edit'])) {
 $preselectedGroup = isset($_GET['group_id']) ? (int)$_GET['group_id'] : null;
 ?>
 
-<div class="card">
-    <div class="card-header">
-        <h2><i class="fas fa-user-graduate"></i> Manage Students</h2>
-        <button onclick="openModal('createStudentModal')" class="btn btn-primary btn-sm">
-            <i class="fas fa-plus"></i> Add Student
-        </button>
+<div class="premium-banner">
+    <div class="banner-content">
+        <div class="banner-icon-wrapper">
+            <i class="fas fa-user-graduate"></i>
+        </div>
+        <div class="banner-text">
+            <h1>Student Database</h1>
+            <p>Manage student records and class assignments</p>
+        </div>
+        <div class="banner-actions">
+            <button onclick="openModal('createStudentModal')" class="btn btn-primary">
+                <i class="fas fa-plus-circle"></i> Enrol New Student
+            </button>
+        </div>
     </div>
+</div>
+
+<div class="card">
     <div class="card-body">
-        <?php if (empty($students)): ?>
-            <p class="text-center" style="color: var(--text-secondary); padding: 2rem;">
-                <i class="fas fa-info-circle"></i> No students added yet.
-            </p>
-        <?php else: ?>
-            <div class="form-group">
-                <input type="text" id="searchInput" class="form-control" placeholder="Search students...">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; gap: 1rem;">
+            <div style="position: relative; flex: 1; max-width: 400px;">
+                <i class="fas fa-search" style="position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
+                <input type="text" id="searchInput" class="form-control" placeholder="Search by name, ID or group..." style="padding-left: 3rem; border-radius: 15px; border: 1px solid #e2e8f0; background: #f8fafc;">
             </div>
-            
+            <div style="display: flex; gap: 0.5rem;">
+                <a href="import_students.php" class="btn btn-secondary">
+                    <i class="fas fa-file-import"></i> Bulk Import
+                </a>
+            </div>
+        </div>
+
+        <?php if (empty($students)): ?>
+            <div style="text-align: center; padding: 4rem 2rem; background: #f8fafc; border-radius: 20px; border: 2px dashed #e2e8f0;">
+                <i class="fas fa-user-slash" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1.5rem;"></i>
+                <h3 style="color: #64748b; font-weight: 700;">No Students Found</h3>
+                <p style="color: #94a3b8; margin-bottom: 2rem;">Start by adding your first student to the system.</p>
+                <button onclick="openModal('createStudentModal')" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add First Student
+                </button>
+            </div>
+        <?php else: ?>
             <div class="table-responsive">
                 <table id="studentsTable">
                     <thead>
                         <tr>
-                            <th>Reg. No.</th>
-                            <th>Title</th>
-                            <th>Name</th>
-                            <th>Group</th>
-                            <th>Created At</th>
-                            <th>Actions</th>
+                            <th>Registration</th>
+                            <th>Identity</th>
+                            <th>Assigned Group</th>
+                            <th>Entry Date</th>
+                            <th class="text-right">Manage</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($students as $student): ?>
-                        <tr>
-                            <td><strong><?php echo htmlspecialchars($student['reg_no']); ?></strong></td>
-                            <td><span class="badge badge-<?php echo $student['title'] === 'MR' ? 'primary' : 'info'; ?>"><?php echo htmlspecialchars($student['title']); ?></span></td>
-                            <td><?php echo htmlspecialchars($student['name']); ?></td>
-                            <td><?php echo htmlspecialchars($student['group_name']); ?></td>
-                            <td><?php echo formatDate($student['created_at']); ?></td>
+                        <tr style="transition: all 0.2s;">
+                            <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; font-weight: 700; color: var(--primary-color);">
+                                <?php echo htmlspecialchars($student['reg_no']); ?>
+                            </td>
                             <td>
-                                <button onclick="editStudent(<?php echo $student['id']; ?>, '<?php echo htmlspecialchars($student['reg_no'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($student['title'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($student['name'], ENT_QUOTES); ?>', <?php echo $student['group_id']; ?>)" class="btn btn-sm btn-warning">
-                                    <i class="fas fa-edit"></i> Edit
-                                </button>
-                                <form method="POST" style="display: inline;" onsubmit="return confirm('Delete this student? All attendance records will also be deleted.');">
-                                    <input type="hidden" name="action" value="delete">
-                                    <input type="hidden" name="id" value="<?php echo $student['id']; ?>">
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        <i class="fas fa-trash"></i> Delete
+                                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                    <div style="width: 35px; height: 35px; border-radius: 10px; background: <?php echo $student['title'] === 'MR' ? '#e0f2fe' : '#fef2f2'; ?>; color: <?php echo $student['title'] === 'MR' ? '#0369a1' : '#dc2626'; ?>; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.7rem;">
+                                        <?php echo $student['title']; ?>
+                                    </div>
+                                    <div style="font-weight: 600; color: #1e293b;"><?php echo htmlspecialchars($student['name']); ?></div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge" style="background: #f1f5f9; color: #475569; letter-spacing: 0;">
+                                    <i class="fas fa-users-line" style="margin-right: 0.3rem; font-size: 0.75rem;"></i>
+                                    <?php echo htmlspecialchars($student['group_name']); ?>
+                                </span>
+                            </td>
+                            <td style="color: #64748b; font-size: 0.9rem;">
+                                <?php echo date('M j, Y', strtotime($student['created_at'])); ?>
+                            </td>
+                            <td class="text-right">
+                                <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+                                    <button onclick="editStudent(<?php echo $student['id']; ?>, '<?php echo htmlspecialchars($student['reg_no'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($student['title'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($student['name'], ENT_QUOTES); ?>', <?php echo $student['group_id']; ?>)" class="btn btn-sm" style="background: #fef9c3; color: #854d0e; border: none;" title="Edit Profile">
+                                        <i class="fas fa-edit"></i>
                                     </button>
-                                </form>
+                                    <form method="POST" style="display: inline;" onsubmit="return confirm('Archive this student?');">
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="id" value="<?php echo $student['id']; ?>">
+                                        <button type="submit" class="btn btn-sm" style="background: #fee2e2; color: #991b1b; border: none;" title="Remove">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                         <?php endforeach; ?>

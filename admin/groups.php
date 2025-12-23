@@ -121,177 +121,202 @@ if (isset($_GET['view'])) {
 ?>
 
 <?php if ($viewGroup): ?>
-    <!-- View Group Details -->
-    <div class="card">
-        <div class="card-header">
-            <h2><i class="fas fa-users"></i> <?php echo htmlspecialchars($viewGroup['name']); ?></h2>
-            <a href="groups.php" class="btn btn-secondary btn-sm">
-                <i class="fas fa-arrow-left"></i> Back to Groups
-            </a>
+    <div class="premium-banner">
+        <div class="banner-content">
+            <div class="banner-icon-wrapper">
+                <i class="fas fa-layer-group"></i>
+            </div>
+            <div class="banner-text">
+                <h1><?php echo htmlspecialchars($viewGroup['name']); ?></h1>
+                <p>Comprehensive group management and assignments</p>
+            </div>
+            <div class="banner-actions">
+                <a href="groups.php" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> All Groups
+                </a>
+            </div>
         </div>
     </div>
     
-    <!-- Assigned Lecturers -->
-    <div class="card">
-        <div class="card-header">
-            <h2><i class="fas fa-chalkboard-teacher"></i> Assigned Lecturers</h2>
-        </div>
-        <div class="card-body">
-            <?php if (empty($assignedLecturers)): ?>
-                <p class="text-center" style="color: var(--text-secondary); padding: 1rem;">
-                    No lecturers assigned yet.
-                </p>
-            <?php else: ?>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Username</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($assignedLecturers as $lecturer): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($lecturer['name']); ?></td>
-                                <td><?php echo htmlspecialchars($lecturer['email']); ?></td>
-                                <td><?php echo htmlspecialchars($lecturer['phone']); ?></td>
-                                <td><?php echo htmlspecialchars($lecturer['username']); ?></td>
-                                <td>
-                                    <form method="POST" style="display: inline;" onsubmit="return confirm('Remove this lecturer from the group?');">
-                                        <input type="hidden" name="action" value="remove_lecturer">
-                                        <input type="hidden" name="group_id" value="<?php echo $viewGroup['id']; ?>">
-                                        <input type="hidden" name="lecturer_id" value="<?php echo $lecturer['id']; ?>">
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="fas fa-times"></i> Remove
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            <?php endif; ?>
-            
-            <?php if (!empty($availableLecturers)): ?>
-                <form method="POST" class="mt-3">
-                    <input type="hidden" name="action" value="assign_lecturer">
-                    <input type="hidden" name="group_id" value="<?php echo $viewGroup['id']; ?>">
-                    <div class="d-flex gap-2 align-center">
-                        <select name="lecturer_id" class="form-control" required>
-                            <option value="">Select a lecturer to assign...</option>
-                            <?php foreach ($availableLecturers as $lecturer): ?>
-                                <option value="<?php echo $lecturer['id']; ?>">
-                                    <?php echo htmlspecialchars($lecturer['name']); ?> (<?php echo htmlspecialchars($lecturer['email']); ?>)
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                        <button type="submit" class="btn btn-success">
-                            <i class="fas fa-plus"></i> Assign Lecturer
-                        </button>
+    <div class="grid grid-cols-2">
+        <!-- Assigned Lecturers -->
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-chalkboard-teacher"></i> Teaching Faculty</h2>
+            </div>
+            <div class="card-body">
+                <?php if (empty($assignedLecturers)): ?>
+                    <div style="text-align: center; padding: 2rem; background: #f8fafc; border-radius: 15px; border: 2px dashed #e2e8f0;">
+                        <p style="color: #64748b; font-weight: 600;">No lecturers assigned</p>
                     </div>
-                </form>
-            <?php endif; ?>
+                <?php else: ?>
+                    <div class="table-responsive">
+                        <table>
+                            <tbody>
+                                <?php foreach ($assignedLecturers as $lecturer): ?>
+                                <tr>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                            <div style="width: 32px; height: 32px; border-radius: 8px; background: #f1f5f9; color: #475569; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem;">
+                                                <?php echo strtoupper(substr($lecturer['name'], 0, 1)); ?>
+                                            </div>
+                                            <div style="font-weight: 700; color: #1e293b;"><?php echo htmlspecialchars($lecturer['name']); ?></div>
+                                        </div>
+                                    </td>
+                                    <td class="text-right">
+                                        <form method="POST" style="display: inline;">
+                                            <input type="hidden" name="action" value="remove_lecturer">
+                                            <input type="hidden" name="group_id" value="<?php echo $viewGroup['id']; ?>">
+                                            <input type="hidden" name="lecturer_id" value="<?php echo $lecturer['id']; ?>">
+                                            <button type="submit" class="btn btn-sm" style="background: #fee2e2; color: #991b1b; border: none;">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php endif; ?>
+                
+                <?php if (!empty($availableLecturers)): ?>
+                    <form method="POST" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #f1f5f9;">
+                        <input type="hidden" name="action" value="assign_lecturer">
+                        <input type="hidden" name="group_id" value="<?php echo $viewGroup['id']; ?>">
+                        <div style="display: flex; gap: 0.5rem;">
+                            <select name="lecturer_id" class="form-control" required style="font-size: 0.9rem;">
+                                <option value="">Assign lecturer...</option>
+                                <?php foreach ($availableLecturers as $lecturer): ?>
+                                    <option value="<?php echo $lecturer['id']; ?>">
+                                        <?php echo htmlspecialchars($lecturer['name']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </form>
+                <?php endif; ?>
+            </div>
         </div>
-    </div>
-    
-    <!-- Students in Group -->
-    <div class="card">
-        <div class="card-header">
-            <h2><i class="fas fa-user-graduate"></i> Students (<?php echo count($groupStudents); ?>)</h2>
-            <a href="students.php?action=create&group_id=<?php echo $viewGroup['id']; ?>" class="btn btn-primary btn-sm">
-                <i class="fas fa-plus"></i> Add Student
-            </a>
-        </div>
-        <div class="card-body">
-            <?php if (empty($groupStudents)): ?>
-                <p class="text-center" style="color: var(--text-secondary); padding: 1rem;">
-                    No students in this group yet.
-                </p>
-            <?php else: ?>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($groupStudents as $student): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($student['name']); ?></td>
-                                <td><?php echo htmlspecialchars($student['email']); ?></td>
-                                <td><?php echo htmlspecialchars($student['phone']); ?></td>
-                                <td>
-                                    <a href="students.php?edit=<?php echo $student['id']; ?>" class="btn btn-sm btn-warning">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </a>
-                                </td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+        
+        <!-- Students in Group Summary -->
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-user-graduate"></i> Enrolled Students</h2>
+                <span class="badge" style="background: #f1f5f9; color: #475569;"><?php echo count($groupStudents); ?> Total</span>
+            </div>
+            <div class="card-body">
+                <?php if (empty($groupStudents)): ?>
+                    <div style="text-align: center; padding: 2rem; background: #f8fafc; border-radius: 15px; border: 2px dashed #e2e8f0;">
+                        <p style="color: #64748b; font-weight: 600;">No students enrolled</p>
+                    </div>
+                <?php else: ?>
+                    <div style="max-height: 300px; overflow-y: auto;">
+                        <table style="font-size: 0.9rem;">
+                            <tbody>
+                                <?php foreach ($groupStudents as $student): ?>
+                                <tr>
+                                    <td style="font-weight: 600; color: #1e293b;"><?php echo htmlspecialchars($student['name']); ?></td>
+                                    <td style="color: #64748b; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;"><?php echo htmlspecialchars($student['reg_no']); ?></td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php endif; ?>
+                <div style="margin-top: 1.5rem; text-align: right;">
+                    <a href="students.php?group_id=<?php echo $viewGroup['id']; ?>" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-external-link-alt"></i> Manage Student List
+                    </a>
                 </div>
-            <?php endif; ?>
+            </div>
         </div>
     </div>
 
 <?php else: ?>
     <!-- List All Groups -->
-    <div class="card">
-        <div class="card-header">
-            <h2><i class="fas fa-users"></i> Manage Groups</h2>
-            <button onclick="openModal('createGroupModal')" class="btn btn-primary btn-sm">
-                <i class="fas fa-plus"></i> Create Group
-            </button>
+    <div class="premium-banner">
+        <div class="banner-content">
+            <div class="banner-icon-wrapper">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="banner-text">
+                <h1>Group Management</h1>
+                <p>Organize students into batches and assign faculty</p>
+            </div>
+            <div class="banner-actions">
+                <button onclick="openModal('createGroupModal')" class="btn btn-primary">
+                    <i class="fas fa-plus-circle"></i> Create New Group
+                </button>
+            </div>
         </div>
+    </div>
+
+    <div class="card">
         <div class="card-body">
             <?php if (empty($groups)): ?>
-                <p class="text-center" style="color: var(--text-secondary); padding: 2rem;">
-                    <i class="fas fa-info-circle"></i> No groups created yet.
-                </p>
+                <div style="text-align: center; padding: 4rem 2rem; background: #f8fafc; border-radius: 20px; border: 2px dashed #e2e8f0;">
+                    <i class="fas fa-users-slash" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1.5rem;"></i>
+                    <h3 style="color: #64748b; font-weight: 700;">No Groups Created</h3>
+                    <p style="color: #94a3b8; margin-bottom: 2rem;">Create your first student group to begin managing attendance.</p>
+                    <button onclick="openModal('createGroupModal')" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Create First Group
+                    </button>
+                </div>
             <?php else: ?>
                 <div class="table-responsive">
                     <table id="groupsTable">
                         <thead>
                             <tr>
                                 <th>Group Name</th>
-                                <th>Students</th>
-                                <th>Lecturers</th>
-                                <th>Created By</th>
-                                <th>Created At</th>
-                                <th>Actions</th>
+                                <th>Population</th>
+                                <th>Faculty</th>
+                                <th>Metadata</th>
+                                <th class="text-right">Manage</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($groups as $group): ?>
                             <tr>
-                                <td><strong><?php echo htmlspecialchars($group['name']); ?></strong></td>
-                                <td><?php echo $group['student_count']; ?></td>
-                                <td><?php echo $group['lecturer_count']; ?></td>
-                                <td><?php echo htmlspecialchars($group['created_by_name']); ?></td>
-                                <td><?php echo formatDate($group['created_at']); ?></td>
                                 <td>
-                                    <a href="groups.php?view=<?php echo $group['id']; ?>" class="btn btn-sm btn-primary">
-                                        <i class="fas fa-eye"></i> View
-                                    </a>
-                                    <button onclick="editGroup(<?php echo $group['id']; ?>, '<?php echo htmlspecialchars($group['name'], ENT_QUOTES); ?>')" class="btn btn-sm btn-warning">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </button>
-                                    <form method="POST" style="display: inline;" onsubmit="return confirm('Delete this group? All students and partitions will also be deleted.');">
-                                        <input type="hidden" name="action" value="delete">
-                                        <input type="hidden" name="id" value="<?php echo $group['id']; ?>">
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="fas fa-trash"></i> Delete
+                                    <div style="font-weight: 800; color: #0f172a; font-size: 1.1rem;"><?php echo htmlspecialchars($group['name']); ?></div>
+                                    <div style="font-size: 0.8rem; color: #64748b; font-weight: 500;">ID: #<?php echo str_pad($group['id'], 3, '0', STR_PAD_LEFT); ?></div>
+                                </td>
+                                <td>
+                                    <span class="badge" style="background: #ecfdf5; color: #059669; font-weight: 800;">
+                                        <i class="fas fa-user-graduate" style="margin-right: 0.3rem;"></i>
+                                        <?php echo $group['student_count']; ?> Students
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge" style="background: #eef2ff; color: #4f46e5; font-weight: 800;">
+                                        <i class="fas fa-chalkboard-teacher" style="margin-right: 0.3rem;"></i>
+                                        <?php echo $group['lecturer_count']; ?> Assigned
+                                    </span>
+                                </td>
+                                <td>
+                                    <div style="font-size: 0.85rem; color: #1e293b; font-weight: 600;">By <?php echo htmlspecialchars($group['created_by_name']); ?></div>
+                                    <div style="font-size: 0.8rem; color: #94a3b8;"><?php echo date('M j, Y', strtotime($group['created_at'])); ?></div>
+                                </td>
+                                <td class="text-right">
+                                    <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+                                        <a href="groups.php?view=<?php echo $group['id']; ?>" class="btn btn-sm" style="background: #f1f5f9; color: #475569; border: none;" title="Configure Group">
+                                            <i class="fas fa-cog"></i>
+                                        </a>
+                                        <button onclick="editGroup(<?php echo $group['id']; ?>, '<?php echo htmlspecialchars($group['name'], ENT_QUOTES); ?>')" class="btn btn-sm" style="background: #fef9c3; color: #854d0e; border: none;" title="Rename">
+                                            <i class="fas fa-edit"></i>
                                         </button>
-                                    </form>
+                                        <form method="POST" style="display: inline;" onsubmit="return confirm('Delete this group?');">
+                                            <input type="hidden" name="action" value="delete">
+                                            <input type="hidden" name="id" value="<?php echo $group['id']; ?>">
+                                            <button type="submit" class="btn btn-sm" style="background: #fee2e2; color: #991b1b; border: none;" title="Remove">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                             <?php endforeach; ?>

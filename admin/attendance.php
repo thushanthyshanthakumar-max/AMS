@@ -55,17 +55,31 @@ if ($selectedGroup) {
 }
 ?>
 
-<div class="card">
-    <div class="card-header">
-        <h2><i class="fas fa-clipboard-check"></i> View Attendance Records</h2>
+<div class="premium-banner">
+    <div class="banner-content">
+        <div class="banner-icon-wrapper">
+            <i class="fas fa-history"></i>
+        </div>
+        <div class="banner-text">
+            <h1>Attendance Logs</h1>
+            <p>Review historical attendance records and session statistics</p>
+        </div>
+        <div class="banner-actions">
+            <a href="dashboard.php" class="btn btn-secondary">
+                <i class="fas fa-chart-pie"></i> View Overview
+            </a>
+        </div>
     </div>
+</div>
+
+<div class="card" style="margin-bottom: 2rem;">
     <div class="card-body">
-        <form method="GET" class="mb-3">
-            <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 1rem; align-items: end;">
+        <form method="GET">
+            <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 1.5rem; align-items: end;">
                 <div class="form-group">
-                    <label for="group_id" class="form-label">Select Group</label>
-                    <select id="group_id" name="group_id" class="form-control" required>
-                        <option value="">Select a group...</option>
+                    <label for="group_id" class="form-label" style="font-weight: 700; color: #475569;">Target Batch</label>
+                    <select id="group_id" name="group_id" class="form-control" required style="border-radius: 12px; height: 50px;">
+                        <option value="">Choose a group...</option>
                         <?php foreach ($groups as $group): ?>
                             <option value="<?php echo $group['id']; ?>" <?php echo ($selectedGroup == $group['id']) ? 'selected' : ''; ?>>
                                 <?php echo htmlspecialchars($group['name']); ?>
@@ -75,80 +89,119 @@ if ($selectedGroup) {
                 </div>
                 
                 <div class="form-group">
-                    <label for="date" class="form-label">Select Date</label>
-                    <input type="date" id="date" name="date" class="form-control" value="<?php echo $selectedDate; ?>" required>
+                    <label for="date" class="form-label" style="font-weight: 700; color: #475569;">Specific Date</label>
+                    <input type="date" id="date" name="date" class="form-control" value="<?php echo $selectedDate; ?>" required style="border-radius: 12px; height: 50px;">
                 </div>
                 
                 <div>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-search"></i> View Attendance
+                    <button type="submit" class="btn btn-primary" style="height: 50px; padding: 0 2rem; border-radius: 12px;">
+                        <i class="fas fa-filter"></i> Apply Filters
                     </button>
                 </div>
             </div>
         </form>
-        
-        <?php if ($selectedGroup && !empty($attendanceRecords)): ?>
-            <!-- Statistics -->
-            <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 2rem;">
-                <div class="stat-card" style="background: linear-gradient(135deg, var(--info-color), #2563eb);">
-                    <div class="stat-icon"><i class="fas fa-clipboard-list"></i></div>
-                    <div class="stat-value"><?php echo $stats['total']; ?></div>
-                    <div class="stat-label">Total Records</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
-                    <div class="stat-value"><?php echo $stats['present']; ?></div>
-                    <div class="stat-label">Present</div>
-                </div>
-                <div class="stat-card" style="background: linear-gradient(135deg, var(--danger-color), #dc2626);">
-                    <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
-                    <div class="stat-value"><?php echo $stats['absent']; ?></div>
-                    <div class="stat-label">Absent</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
-                    <div class="stat-value"><?php echo $stats['late']; ?></div>
-                    <div class="stat-label">Late</div>
-                </div>
+    </div>
+</div>
+
+<?php if ($selectedGroup && !empty($attendanceRecords)): ?>
+    <!-- Statistics Overview -->
+    <div class="grid grid-cols-4" style="margin-bottom: 2rem;">
+        <div class="mini-stat-card" style="--bg-accent: #6366f1;">
+            <div class="mini-stat-icon"><i class="fas fa-users-viewfinder"></i></div>
+            <div class="mini-stat-info">
+                <h2><?php echo $stats['total']; ?></h2>
+                <p>Total Roll Call</p>
             </div>
-            
-            <!-- Attendance Records -->
+        </div>
+        <div class="mini-stat-card" style="--bg-accent: #10b981;">
+            <div class="mini-stat-icon"><i class="fas fa-user-check"></i></div>
+            <div class="mini-stat-info">
+                <h2><?php echo $stats['present']; ?></h2>
+                <p>Present</p>
+            </div>
+        </div>
+        <div class="mini-stat-card" style="--bg-accent: #f59e0b;">
+            <div class="mini-stat-icon"><i class="fas fa-clock"></i></div>
+            <div class="mini-stat-info">
+                <h2><?php echo $stats['late']; ?></h2>
+                <p>Late Arrival</p>
+            </div>
+        </div>
+        <div class="mini-stat-card" style="--bg-accent: #ef4444;">
+            <div class="mini-stat-icon"><i class="fas fa-user-xmark"></i></div>
+            <div class="mini-stat-info">
+                <h2><?php echo $stats['absent']; ?></h2>
+                <p>Absent</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Attendance Table -->
+    <div class="card">
+        <div class="card-body">
             <div class="table-responsive">
                 <table>
                     <thead>
                         <tr>
-                            <th>Student Name</th>
-                            <th>Partition</th>
-                            <th>Time</th>
-                            <th>Status</th>
-                            <th>Marked By</th>
-                            <th>Notes</th>
+                            <th>Student Identity</th>
+                            <th>Class Session</th>
+                            <th>Time Window</th>
+                            <th>Status Badge</th>
+                            <th>Registrar</th>
+                            <th class="text-right">Remarks</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($attendanceRecords as $record): ?>
                         <tr>
-                            <td><strong><?php echo htmlspecialchars($record['student_name']); ?></strong></td>
-                            <td><?php echo htmlspecialchars($record['partition_name']); ?></td>
-                            <td><?php echo formatTime($record['start_time']) . ' - ' . formatTime($record['end_time']); ?></td>
+                            <td>
+                                <div style="font-weight: 700; color: #0f172a;"><?php echo htmlspecialchars($record['student_name']); ?></div>
+                            </td>
+                            <td>
+                                <span class="badge" style="background: #f1f5f9; color: #475569; letter-spacing: 0;">
+                                    <?php echo htmlspecialchars($record['partition_name']); ?>
+                                </span>
+                            </td>
+                            <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: #64748b;">
+                                <?php echo formatTime($record['start_time']) . ' - ' . formatTime($record['end_time']); ?>
+                            </td>
                             <td><?php echo getStatusBadge($record['status']); ?></td>
-                            <td><?php echo htmlspecialchars($record['marked_by_name']); ?></td>
-                            <td><?php echo htmlspecialchars($record['notes']); ?></td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 600; color: #1e293b;">
+                                    <i class="fas fa-user-pen" style="color: #94a3b8; font-size: 0.8rem;"></i>
+                                    <?php echo htmlspecialchars($record['marked_by_name']); ?>
+                                </div>
+                            </td>
+                            <td class="text-right">
+                                <?php if ($record['notes']): ?>
+                                    <span style="font-size: 0.85rem; color: #94a3b8; font-style: italic;">"<?php echo htmlspecialchars($record['notes']); ?>"</span>
+                                <?php else: ?>
+                                    <span style="color: #e2e8f0;">—</span>
+                                <?php endif; ?>
+                            </td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
-        <?php elseif ($selectedGroup): ?>
-            <p class="text-center" style="color: var(--text-secondary); padding: 2rem;">
-                <i class="fas fa-info-circle"></i> No attendance records found for the selected date.
-            </p>
-        <?php else: ?>
-            <p class="text-center" style="color: var(--text-secondary); padding: 2rem;">
-                <i class="fas fa-arrow-up"></i> Please select a group and date to view attendance records.
-            </p>
-        <?php endif; ?>
+        </div>
     </div>
-</div>
+<?php elseif ($selectedGroup): ?>
+    <div class="card" style="background: #f8fafc; border: 2px dashed #e2e8f0; border-radius: 24px;">
+        <div class="card-body" style="text-align: center; padding: 5rem 2rem;">
+            <i class="fas fa-calendar-xmark" style="font-size: 4rem; color: #cbd5e1; margin-bottom: 1.5rem;"></i>
+            <h2 style="color: #64748b; font-weight: 800;">No Records Found</h2>
+            <p style="color: #94a3b8;">There are no attendance logs for the selected group on this date.</p>
+        </div>
+    </div>
+<?php else: ?>
+    <div class="card" style="background: #f8fafc; border: 2px dashed #e2e8f0; border-radius: 24px;">
+        <div class="card-body" style="text-align: center; padding: 5rem 2rem;">
+            <i class="fas fa-search" style="font-size: 4rem; color: #cbd5e1; margin-bottom: 1.5rem;"></i>
+            <h2 style="color: #64748b; font-weight: 800;">Ready to Search</h2>
+            <p style="color: #94a3b8;">Select a batch and date above to pull up historical attendance logs.</p>
+        </div>
+    </div>
+<?php endif; ?>
 
 <?php require_once '../includes/footer.php'; ?>

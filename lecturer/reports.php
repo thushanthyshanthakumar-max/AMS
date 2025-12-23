@@ -129,21 +129,34 @@ if (isset($_GET['generate'])) {
 }
 ?>
 
-<div class="card">
-    <div class="card-header">
-        <h2><i class="fas fa-chart-line"></i> Generate Attendance Report</h2>
+<div class="premium-banner">
+    <div class="banner-content">
+        <div class="banner-icon-wrapper">
+            <i class="fas fa-chart-bar"></i>
+        </div>
+        <div class="banner-text">
+            <h1>Analytics & Reports</h1>
+            <p>Deep dive into student attendance metrics and batch performance</p>
+        </div>
+        <div class="banner-actions">
+            <button onclick="window.print()" class="btn btn-secondary">
+                <i class="fas fa-print"></i> Quick Print
+            </button>
+        </div>
     </div>
+</div>
+
+<div class="card" style="margin-bottom: 2rem;">
     <div class="card-body">
-        <form method="GET" class="report-filters">
+        <form method="GET">
             <input type="hidden" name="generate" value="1">
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; align-items: end;">
+            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 1.5rem; align-items: end;">
                 <div class="form-group">
-                    <label for="group_id" class="form-label font-weight-bold">Select Group</label>
+                    <label for="group_id" class="form-label" style="font-weight: 700; color: #475569;">Batch Selection</label>
                     <div style="position: relative;">
-                        <i class="fas fa-users" style="position: absolute; left: 10px; top: 12px; color: var(--text-secondary);"></i>
-                        <select id="group_id" name="group_id" class="form-control" style="padding-left: 35px;" required>
-                            <option value="">Choose a class group...</option>
+                        <i class="fas fa-users" style="position: absolute; left: 15px; top: 18px; color: #94a3b8; font-size: 0.9rem;"></i>
+                        <select id="group_id" name="group_id" class="form-control" required style="padding-left: 45px; border-radius: 12px; height: 50px;">
+                            <option value="">Select a group...</option>
                             <?php foreach ($assignedGroups as $group): ?>
                                 <option value="<?php echo $group['id']; ?>" <?php echo (isset($_GET['group_id']) && $_GET['group_id'] == $group['id']) ? 'selected' : ''; ?>>
                                     <?php echo htmlspecialchars($group['name']); ?>
@@ -154,27 +167,27 @@ if (isset($_GET['generate'])) {
                 </div>
                 
                 <div class="form-group">
-                    <label for="start_date" class="form-label font-weight-bold">From Date</label>
-                    <input type="date" id="start_date" name="start_date" class="form-control" value="<?php echo isset($_GET['start_date']) ? $_GET['start_date'] : date('Y-m-01'); ?>" required>
+                    <label for="start_date" class="form-label" style="font-weight: 700; color: #475569;">From</label>
+                    <input type="date" id="start_date" name="start_date" class="form-control" value="<?php echo isset($_GET['start_date']) ? $_GET['start_date'] : date('Y-m-01'); ?>" required style="border-radius: 12px; height: 50px;">
                 </div>
                 
                 <div class="form-group">
-                    <label for="end_date" class="form-label font-weight-bold">To Date</label>
-                    <input type="date" id="end_date" name="end_date" class="form-control" value="<?php echo isset($_GET['end_date']) ? $_GET['end_date'] : date('Y-m-d'); ?>" required>
+                    <label for="end_date" class="form-label" style="font-weight: 700; color: #475569;">To</label>
+                    <input type="date" id="end_date" name="end_date" class="form-control" value="<?php echo isset($_GET['end_date']) ? $_GET['end_date'] : date('Y-m-d'); ?>" required style="border-radius: 12px; height: 50px;">
                 </div>
                 
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary btn-block" style="height: 45px;">
-                        <i class="fas fa-search"></i> Generate Report
+                    <button type="submit" class="btn btn-primary" style="height: 50px; padding: 0 1.5rem; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);">
+                        <i class="fas fa-arrows-rotate"></i> Compile
                     </button>
                 </div>
             </div>
             
-            <div style="margin-top: 1rem; display: flex; gap: 0.5rem; justify-content: center;">
-                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="setDateRange('today')">Today</button>
-                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="setDateRange('this_week')">This Week</button>
-                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="setDateRange('last_week')">Last Week</button>
-                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="setDateRange('this_month')">This Month</button>
+            <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem;">
+                <button type="button" class="btn btn-sm btn-secondary" style="background: #f1f5f9; color: #475569; border: none; font-weight: 700; border-radius: 8px; padding: 0.5rem 1rem;" onclick="setDateRange('today')">Today</button>
+                <button type="button" class="btn btn-sm btn-secondary" style="background: #f1f5f9; color: #475569; border: none; font-weight: 700; border-radius: 8px; padding: 0.5rem 1rem;" onclick="setDateRange('this_week')">This Week</button>
+                <button type="button" class="btn btn-sm btn-secondary" style="background: #f1f5f9; color: #475569; border: none; font-weight: 700; border-radius: 8px; padding: 0.5rem 1rem;" onclick="setDateRange('last_week')">Last Week</button>
+                <button type="button" class="btn btn-sm btn-secondary" style="background: #f1f5f9; color: #475569; border: none; font-weight: 700; border-radius: 8px; padding: 0.5rem 1rem;" onclick="setDateRange('this_month')">This Month</button>
             </div>
         </form>
     </div>
@@ -224,91 +237,87 @@ function setDateRange(range) {
         </div>
     </div>
 
-    <!-- Overall Statistics -->
-    <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 2rem;">
-        <div class="stat-card" style="background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: white;">
-            <div class="stat-icon" style="opacity: 0.8;"><i class="fas fa-users"></i></div>
+    <!-- Report Analytics -->
+    <div class="grid grid-cols-4" style="margin-bottom: 2rem;">
+        <div class="stat-card" style="--bg-accent: #6366f1;">
+            <div class="stat-icon"><i class="fas fa-user-group"></i></div>
             <div class="stat-value"><?php echo count($reportData['students']); ?></div>
-            <div class="stat-label">Total Students</div>
+            <div class="stat-label">Total Enrollment</div>
         </div>
-        <div class="stat-card" style="background: white; border-top: 4px solid var(--success-color);">
-            <div class="stat-icon" style="color: var(--success-color);"><i class="fas fa-check-circle"></i></div>
-            <div class="stat-value" style="color: var(--success-color);"><?php echo $reportData['overall']['present']; ?></div>
-            <div class="stat-label">Total Present</div>
+        <div class="stat-card" style="--bg-accent: #10b981;">
+            <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+            <div class="stat-value"><?php echo $reportData['overall']['present']; ?></div>
+            <div class="stat-label">Total Present Sessions</div>
         </div>
-        <div class="stat-card" style="background: white; border-top: 4px solid var(--danger-color);">
-            <div class="stat-icon" style="color: var(--danger-color);"><i class="fas fa-times-circle"></i></div>
-            <div class="stat-value" style="color: var(--danger-color);"><?php echo $reportData['overall']['absent']; ?></div>
-            <div class="stat-label">Total Absent</div>
+        <div class="stat-card" style="--bg-accent: #ef4444;">
+            <div class="stat-icon"><i class="fas fa-calendar-xmark"></i></div>
+            <div class="stat-value"><?php echo $reportData['overall']['absent']; ?></div>
+            <div class="stat-label">Total Absent Sessions</div>
         </div>
-        <div class="stat-card" style="background: white; border-top: 4px solid var(--warning-color);">
-            <div class="stat-icon" style="color: var(--warning-color);"><i class="fas fa-percentage"></i></div>
-            <div class="stat-value" style="color: var(--text-primary);">
+        <div class="stat-card" style="--bg-accent: #8b5cf6;">
+            <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+            <div class="stat-value">
                 <?php 
                 $totalOverview = $reportData['overall']['total_records'];
                 echo $totalOverview > 0 ? round(($reportData['overall']['present'] / $totalOverview) * 100) . '%' : '0%'; 
                 ?>
             </div>
-            <div class="stat-label">Avg Attendance</div>
+            <div class="stat-label">Batch Avg. Persistence</div>
         </div>
     </div>
     
-    <!-- Student-wise Report -->
+    <!-- Detail Analytics Table -->
     <div class="card">
         <div class="card-body">
             <?php if (empty($reportData['students'])): ?>
-                <div style="text-align: center; padding: 3rem;">
-                    <i class="fas fa-chart-pie" style="font-size: 3rem; color: var(--border-color); margin-bottom: 1rem;"></i>
-                    <p style="color: var(--text-secondary); font-size: 1.1rem;">No attendance records found for this period.</p>
+                <div style="text-align: center; padding: 5rem 2rem;">
+                    <i class="fas fa-folder-open" style="font-size: 3rem; color: #e2e8f0; margin-bottom: 1.5rem;"></i>
+                    <p style="color: #94a3b8; font-weight: 600;">No attendance records compiled for this date range.</p>
                 </div>
             <?php else: ?>
                 <div class="table-responsive">
-                    <table id="reportTable" style="width: 100%; border-collapse: separate; border-spacing: 0;">
+                    <table id="reportTable">
                         <thead>
-                            <tr style="background-color: var(--light-color);">
-                                <th style="padding: 1rem; border-bottom: 2px solid var(--border-color);">Reg. No.</th>
-                                <th style="padding: 1rem; border-bottom: 2px solid var(--border-color);">Title</th>
-                                <th style="padding: 1rem; border-bottom: 2px solid var(--border-color);">Student Name</th>
-                                <th style="padding: 1rem; border-bottom: 2px solid var(--border-color); text-align: center;">Total Sessions</th>
-                                <th style="padding: 1rem; border-bottom: 2px solid var(--border-color); text-align: center;">Present</th>
-                                <th style="padding: 1rem; border-bottom: 2px solid var(--border-color); text-align: center;">Absent</th>
-                                <th style="padding: 1rem; border-bottom: 2px solid var(--border-color);">Attendance %</th>
+                            <tr>
+                                <th>Student Identity</th>
+                                <th class="text-center">Total Sessions</th>
+                                <th class="text-center">Present</th>
+                                <th class="text-center">Absent</th>
+                                <th style="width: 250px;">Engagement Level</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($reportData['students'] as $student): 
                                 $attendanceRate = calculateAttendancePercentage($student['present'], $student['total_records']);
-                                $barColor = $attendanceRate >= 75 ? 'var(--success-color)' : ($attendanceRate >= 50 ? 'var(--warning-color)' : 'var(--danger-color)');
+                                $barColor = $attendanceRate >= 75 ? '#10b981' : ($attendanceRate >= 50 ? '#f59e0b' : '#ef4444');
                             ?>
                             <tr>
-                                <td style="padding: 1rem; border-bottom: 1px solid var(--border-color);">
-                                    <strong><?php echo htmlspecialchars($student['reg_no']); ?></strong>
-                                </td>
-                                <td style="padding: 1rem; border-bottom: 1px solid var(--border-color);">
-                                    <span class="badge badge-<?php echo $student['title'] === 'MR' ? 'primary' : 'info'; ?>">
-                                        <?php echo htmlspecialchars($student['title']); ?>
-                                    </span>
-                                </td>
-                                <td style="padding: 1rem; border-bottom: 1px solid var(--border-color);">
-                                    <?php echo htmlspecialchars($student['name']); ?>
-                                </td>
-                                <td style="padding: 1rem; border-bottom: 1px solid var(--border-color); text-align: center;">
-                                    <?php echo $student['total_records']; ?>
-                                </td>
-                                <td style="padding: 1rem; border-bottom: 1px solid var(--border-color); text-align: center;">
-                                    <span style="color: var(--success-color); font-weight: 700;"><?php echo $student['present']; ?></span>
-                                </td>
-                                <td style="padding: 1rem; border-bottom: 1px solid var(--border-color); text-align: center;">
-                                    <span style="color: var(--danger-color); font-weight: 700;"><?php echo $student['absent']; ?></span>
-                                </td>
-                                <td style="padding: 1rem; border-bottom: 1px solid var(--border-color); width: 200px;">
+                                <td>
                                     <div style="display: flex; align-items: center; gap: 0.75rem;">
-                                        <div style="flex: 1; height: 8px; background: var(--border-color); border-radius: 4px; overflow: hidden;">
-                                            <div style="height: 100%; width: <?php echo $attendanceRate; ?>%; background: <?php echo $barColor; ?>;"></div>
+                                        <div style="width: 32px; height: 32px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #64748b; font-size: 0.75rem; font-weight: 800;">
+                                            <?php echo substr($student['reg_no'], -2); ?>
                                         </div>
-                                        <span style="font-weight: 600; color: var(--text-primary); min-width: 40px; text-align: right;">
+                                        <div>
+                                            <div style="font-weight: 700; color: #1e293b;"><?php echo htmlspecialchars($student['name']); ?></div>
+                                            <div style="font-size: 0.75rem; color: #94a3b8; font-weight: 600;"><?php echo htmlspecialchars($student['reg_no']); ?></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center" style="font-weight: 700; color: #475569;"><?php echo $student['total_records']; ?></td>
+                                <td class="text-center">
+                                    <span class="badge" style="background: #ecfdf5; color: #059669;"><?php echo $student['present']; ?></span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge" style="background: #fef2f2; color: #dc2626;"><?php echo $student['absent']; ?></span>
+                                </td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 1rem;">
+                                        <div style="flex-grow: 1; height: 8px; background: #f1f5f9; border-radius: 10px; overflow: hidden;">
+                                            <div style="height: 100%; width: <?php echo $attendanceRate; ?>%; background: <?php echo $barColor; ?>; box-shadow: 0 0 10px <?php echo $barColor; ?>40;"></div>
+                                        </div>
+                                        <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 800; color: #1e293b; width: 45px; text-align: right;">
                                             <?php echo $attendanceRate; ?>%
-                                        </span>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>

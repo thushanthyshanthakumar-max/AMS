@@ -1,0 +1,34 @@
+[23-Dec-2025 10:04:27 Asia/Kolkata] PHP Warning:  Undefined variable $partitionsByDay in C:\xampp\htdocs\AMS\admin\partitions.php on line 130
+[23-Dec-2025 10:04:27 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\AMS\admin\partitions.php on line 130
+[23-Dec-2025 10:04:27 Asia/Kolkata] PHP Fatal error:  Uncaught TypeError: count(): Argument #1 ($value) must be of type Countable|array, null given in C:\xampp\htdocs\AMS\admin\partitions.php:130
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\AMS\admin\partitions.php on line 130
+[23-Dec-2025 05:34:31 Europe/Berlin] PHP Parse error:  syntax error, unexpected token "else", expecting end of file in C:\xampp\htdocs\AMS\admin\groups.php on line 238
+[23-Dec-2025 10:04:53 Asia/Kolkata] PHP Warning:  Undefined variable $partitionsByDay in C:\xampp\htdocs\AMS\admin\partitions.php on line 130
+[23-Dec-2025 10:04:53 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\AMS\admin\partitions.php on line 130
+[23-Dec-2025 10:04:53 Asia/Kolkata] PHP Fatal error:  Uncaught TypeError: count(): Argument #1 ($value) must be of type Countable|array, null given in C:\xampp\htdocs\AMS\admin\partitions.php:130
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\AMS\admin\partitions.php on line 130
+[23-Dec-2025 05:34:57 Europe/Berlin] PHP Parse error:  syntax error, unexpected token "else", expecting end of file in C:\xampp\htdocs\AMS\admin\groups.php on line 238
+[23-Dec-2025 10:05:37 Asia/Kolkata] PHP Warning:  Undefined variable $partitionsByDay in C:\xampp\htdocs\AMS\admin\partitions.php on line 130
+[23-Dec-2025 10:05:37 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\AMS\admin\partitions.php on line 130
+[23-Dec-2025 10:05:37 Asia/Kolkata] PHP Fatal error:  Uncaught TypeError: count(): Argument #1 ($value) must be of type Countable|array, null given in C:\xampp\htdocs\AMS\admin\partitions.php:130
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\AMS\admin\partitions.php on line 130
+[23-Dec-2025 10:13:25 Asia/Kolkata] PHP Warning:  Undefined variable $partitionsByDay in C:\xampp\htdocs\AMS\admin\partitions.php on line 130
+[23-Dec-2025 10:13:25 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\AMS\admin\partitions.php on line 130
+[23-Dec-2025 10:13:25 Asia/Kolkata] PHP Fatal error:  Uncaught TypeError: count(): Argument #1 ($value) must be of type Countable|array, null given in C:\xampp\htdocs\AMS\admin\partitions.php:130
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\AMS\admin\partitions.php on line 130
+[23-Dec-2025 05:44:22 Europe/Berlin] PHP Parse error:  syntax error, unexpected token "else", expecting end of file in C:\xampp\htdocs\AMS\admin\groups.php on line 238
+[23-Dec-2025 05:44:26 Europe/Berlin] PHP Parse error:  syntax error, unexpected token "else", expecting end of file in C:\xampp\htdocs\AMS\admin\groups.php on line 238
+[23-Dec-2025 10:16:09 Asia/Kolkata] PHP Warning:  Undefined variable $partitionsByDay in C:\xampp\htdocs\AMS\admin\partitions.php on line 130
+[23-Dec-2025 10:16:09 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\AMS\admin\partitions.php on line 130
+[23-Dec-2025 10:16:09 Asia/Kolkata] PHP Fatal error:  Uncaught TypeError: count(): Argument #1 ($value) must be of type Countable|array, null given in C:\xampp\htdocs\AMS\admin\partitions.php:130
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\AMS\admin\partitions.php on line 130

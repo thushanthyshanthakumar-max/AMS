@@ -361,51 +361,74 @@ if ($selectedPartition && $currentPartition && $selectedPartition == $currentPar
 }
 </style>
 
-<?php if ($isCurrentSession): ?>
-<div class="current-session-banner">
-    <i class="fas fa-clock" style="font-size: 2rem;"></i>
-    <div class="session-info">
-        <div class="session-time">
-            <i class="fas fa-circle" style="font-size: 0.5rem; animation: blink 1s infinite;"></i>
-            LIVE SESSION
+<div class="premium-banner">
+    <div class="banner-content">
+        <div class="banner-icon-wrapper">
+            <i class="fas fa-clipboard-user"></i>
         </div>
-        <div class="session-details">
-            <?php echo htmlspecialchars($currentPartition['name']); ?> • 
-            <?php echo htmlspecialchars($currentPartition['group_name']); ?> • 
-            <?php echo date('g:i A', strtotime($currentPartition['start_time'])); ?> - <?php echo date('g:i A', strtotime($currentPartition['end_time'])); ?>
+        <div class="banner-text">
+            <h1>Attendance Desk</h1>
+            <p>Mark and manage student attendance for your active sessions</p>
+        </div>
+        <div class="banner-actions">
+            <div style="background: rgba(255,255,255,0.05); padding: 0.75rem 1.5rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); width: fit-content;">
+                <div style="color: rgba(255,255,255,0.4); font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Current System Time</div>
+                <div style="color: white; font-weight: 800; font-size: 1.25rem; line-height: 1; margin-top: 0.2rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-clock" style="color: #818cf8; font-size: 1rem;"></i>
+                    <?php echo date('g:i A'); ?>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<?php if ($isCurrentSession): ?>
+<div class="card" style="background: linear-gradient(135deg, #059669 0%, #065f46 100%); border: none; margin-bottom: 2rem; box-shadow: 0 20px 25px -5px rgba(5, 150, 105, 0.3);">
+    <div class="card-body" style="padding: 1.5rem 2rem; display: flex; align-items: center; gap: 2rem;">
+        <div style="width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; animation: pulse 2s infinite;">
+            <i class="fas fa-broadcast-tower" style="color: white; font-size: 1.5rem;"></i>
+        </div>
+        <div style="flex-grow: 1;">
+            <div style="color: rgba(255,255,255,0.8); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Active Session Detected</div>
+            <h2 style="color: white; margin: 0; font-weight: 800; font-size: 1.5rem;">
+                <?php echo htmlspecialchars($currentPartition['name']); ?> • 
+                <span style="opacity: 0.9;"><?php echo htmlspecialchars($currentPartition['group_name']); ?></span>
+            </h2>
+            <div style="color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-top: 4px; font-weight: 500;">
+                <i class="fas fa-hourglass-start" style="margin-right: 5px;"></i>
+                <?php echo date('g:i A', strtotime($currentPartition['start_time'])); ?> - <?php echo date('g:i A', strtotime($currentPartition['end_time'])); ?>
+            </div>
+        </div>
+        <a href="?group_id=<?php echo $currentPartition['group_id']; ?>&partition_id=<?php echo $currentPartition['id']; ?>&date=<?php echo $selectedDate; ?>" class="btn" style="background: white; color: #059669; font-weight: 800; padding: 0.75rem 1.5rem; border-radius: 14px;">
+            Open Session <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+        </a>
+    </div>
+</div>
 <?php elseif (!$selectedPartition && !$currentPartition): ?>
-<div class="no-session-banner">
-    <i class="fas fa-info-circle" style="font-size: 2rem;"></i>
-    <div class="session-info">
-        <div class="session-time">No Active Session</div>
-        <div class="session-details">
-            There is no class scheduled for <?php echo $currentDay; ?> at <?php echo date('g:i A'); ?>. 
-            Please select a partition below to mark attendance.
+<div class="card" style="background: white; border-radius: 20px; border: 1px solid #e2e8f0; margin-bottom: 2rem;">
+    <div class="card-body" style="padding: 1.5rem 2rem; display: flex; align-items: center; gap: 1.5rem;">
+        <div style="width: 50px; height: 50px; background: #fff7ed; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-calendar-day" style="color: #f59e0b; font-size: 1.25rem;"></i>
+        </div>
+        <div>
+            <h4 style="margin: 0; font-weight: 800; color: #1e293b;">No Live Classes</h4>
+            <p style="margin: 2px 0 0 0; color: #64748b; font-size: 0.9rem;">It's currently <?php echo $currentDay; ?> at <?php echo date('g:i A'); ?>. Select a batch below to view schedule details.</p>
         </div>
     </div>
 </div>
 <?php endif; ?>
 
-<style>
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-}
-</style>
-
-<div class="card">
-    <div class="card-header">
-        <h2><i class="fas fa-clipboard-check"></i> Mark Attendance</h2>
-    </div>
+<div class="card" style="margin-bottom: 2rem;">
     <div class="card-body">
         <?php if (!empty($assignedGroups)): ?>
-            <h3 style="margin-bottom: 1rem;"><i class="fas fa-calendar-alt"></i> Your Class Schedule</h3>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+                <h3 style="margin: 0; font-weight: 800; color: #1e293b;"><i class="fas fa-calendar-week" style="color: #6366f1; margin-right: 10px;"></i> Academic Schedule</h3>
+                <div class="form-group" style="margin: 0; min-width: 200px;">
+                    <input type="date" id="dateFilter" class="form-control" value="<?php echo $selectedDate; ?>" style="height: 42px; border-radius: 10px;">
+                </div>
+            </div>
             
             <?php
-            // Group partitions by day
             $partitionsByDay = [];
             foreach ($assignedGroups as $group) {
                 try {
@@ -418,50 +441,42 @@ if ($selectedPartition && $currentPartition && $selectedPartition == $currentPar
                         $partition['group_id'] = $group['id'];
                         $partitionsByDay[$partition['day_of_week']][] = $partition;
                     }
-                } catch (PDOException $e) {
-                    // Ignore
-                }
+                } catch (PDOException $e) {}
             }
-            
             $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
             ?>
             
-            <div class="calendar-view-container">
+            <div class="calendar-view-container" style="display: flex; gap: 1.25rem; overflow-x: auto; padding-bottom: 1rem;">
             <?php foreach ($days as $day): 
                 if (empty($partitionsByDay[$day])) continue;
             ?>
-                <div class="day-column">
-                    <div class="day-column-header">
+                <div class="day-column" style="min-width: 280px; background: #f8fafc; padding: 1.25rem; border-radius: 20px; border: 1px solid #f1f5f9;">
+                    <div style="font-weight: 800; font-size: 1rem; color: #1e293b; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between;">
                         <?php echo $day; ?>
                         <?php if ($day === $currentDay): ?>
-                            <span class="badge badge-primary">Today</span>
+                            <span class="badge" style="background: #e0e7ff; color: #4338ca; font-size: 0.7rem;">TODAY</span>
                         <?php endif; ?>
                     </div>
-                    <div class="partition-list-stack">
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
                         <?php foreach ($partitionsByDay[$day] as $partition): 
-                            $isCurrent = ($day === $currentDay && 
-                                         $currentTime >= $partition['start_time'] && 
-                                         $currentTime <= $partition['end_time']);
+                            $isCurrent = ($day === $currentDay && $currentTime >= $partition['start_time'] && $currentTime <= $partition['end_time']);
                             $isActive = ($selectedPartition == $partition['id']);
-                            $cardClass = $isCurrent ? 'current' : ($isActive ? 'active' : '');
                         ?>
                             <a href="?group_id=<?php echo $partition['group_id']; ?>&partition_id=<?php echo $partition['id']; ?>&date=<?php echo $selectedDate; ?>" 
-                               class="partition-quick-card <?php echo $cardClass; ?>">
-                                <div class="card-session-name">
-                                    <?php if ($isCurrent): ?>
-                                        <i class="fas fa-circle" style="font-size: 0.5rem; animation: blink 1s infinite;"></i>
-                                    <?php else: ?>
-                                        <i class="fas fa-clock"></i>
-                                    <?php endif; ?>
+                               class="partition-card <?php echo $isActive ? 'active' : ''; ?> <?php echo $isCurrent ? 'current' : ''; ?>"
+                               style="text-decoration: none; display: block; background: <?php echo $isActive ? 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)' : 'white'; ?>; padding: 1.25rem; border-radius: 16px; border: 2px solid <?php echo $isActive ? '#6366f1' : '#e2e8f0'; ?>; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: <?php echo $isActive ? '0 10px 15px -3px rgba(99, 102, 241, 0.3)' : '0 1px 3px rgba(0,0,0,0.05)'; ?>; cursor: pointer; position: relative; overflow: hidden;">
+                                <?php if ($isCurrent): ?>
+                                <div style="position: absolute; top: 8px; right: 8px; width: 10px; height: 10px; background: #10b981; border-radius: 50%; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); animation: pulse 2s infinite;"></div>
+                                <?php endif; ?>
+                                <div style="color: <?php echo $isActive ? 'rgba(255,255,255,0.8)' : '#64748b'; ?>; font-size: 0.75rem; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                                    <i class="fas fa-clock"></i>
+                                    <?php echo date('g:i A', strtotime($partition['start_time'])); ?> - <?php echo date('g:i A', strtotime($partition['end_time'])); ?>
+                                </div>
+                                <div style="color: <?php echo $isActive ? 'white' : '#1e293b'; ?>; font-weight: 800; font-size: 1.05rem; margin-bottom: 6px; line-height: 1.3;">
                                     <?php echo htmlspecialchars($partition['name']); ?>
                                 </div>
-                                <div class="card-time">
-                                    <?php echo date('g:i A', strtotime($partition['start_time'])); ?>
-                                    <span>-</span>
-                                    <?php echo date('g:i A', strtotime($partition['end_time'])); ?>
-                                </div>
-                                <div class="card-group">
-                                    <i class="fas fa-users"></i>
+                                <div style="color: <?php echo $isActive ? 'rgba(255,255,255,0.9)' : '#6366f1'; ?>; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; gap: 4px;">
+                                    <i class="fas fa-users" style="font-size: 0.75rem;"></i>
                                     <?php echo htmlspecialchars($partition['group_name']); ?>
                                 </div>
                             </a>
@@ -471,9 +486,9 @@ if ($selectedPartition && $currentPartition && $selectedPartition == $currentPar
             <?php endforeach; ?>
             </div>
         <?php else: ?>
-            <div class="alert alert-warning">
+            <div class="alert alert-warning" style="border-radius: 16px;">
                 <i class="fas fa-exclamation-triangle"></i>
-                You are not assigned to any groups yet. Please contact the administrator.
+                You are not currently assigned to any classroom batches.
             </div>
         <?php endif; ?>
     </div>
@@ -487,16 +502,16 @@ if ($selectedPartition && $currentPartition && $selectedPartition == $currentPar
     <input type="hidden" name="date" value="<?php echo $selectedDate; ?>">
     
     <div class="card">
-        <div class="card-header">
-            <h2><i class="fas fa-users"></i> Students (<?php echo count($students); ?>)</h2>
-            <div class="d-flex gap-2">
-                <button type="button" class="btn btn-sm btn-success" onclick="markAll('present')">
+        <div class="card-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+            <h2 style="margin: 0;"><i class="fas fa-users"></i> Students (<?php echo count($students); ?>)</h2>
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                <button type="button" class="btn attendance-action-btn" onclick="markAll('present')" style="background: #10b981; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 700; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3); transition: all 0.2s; white-space: nowrap;">
                     <i class="fas fa-check"></i> All Present
                 </button>
-                <button type="button" class="btn btn-sm btn-danger" onclick="markAll('absent')">
+                <button type="button" class="btn attendance-action-btn" onclick="markAll('absent')" style="background: #ef4444; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 700; box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.3); transition: all 0.2s; white-space: nowrap;">
                     <i class="fas fa-times"></i> All Absent
                 </button>
-                <button type="submit" class="btn btn-sm btn-primary">
+                <button type="submit" class="btn attendance-action-btn" style="background: #6366f1; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 700; box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.3); transition: all 0.2s; white-space: nowrap;">
                     <i class="fas fa-save"></i> Save Attendance
                 </button>
             </div>

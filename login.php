@@ -70,181 +70,277 @@ if (isset($_GET['timeout'])) {
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .login-wrapper {
-            width: 100%;
-            max-width: 900px;
-            padding: 2rem;
-        }
-        
-        .role-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            animation: slideUp 0.5s ease-out;
-        }
-
-        .role-card {
-            background: white;
-            border-radius: var(--radius-lg);
-            padding: 3rem;
-            text-align: center;
-            box-shadow: var(--shadow-xl);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            border: 2px solid transparent;
-        }
-
-        .role-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--primary-color);
-        }
-        
-        .role-card i {
-            font-size: 5rem;
-            color: var(--primary-color);
-            margin-bottom: 1.5rem;
-            transition: transform 0.3s ease;
-        }
-
-        .role-card:hover i {
-            transform: scale(1.1);
-        }
-
-        .role-card h2 {
-            font-size: 2rem;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-        
-        .role-card p {
-            color: var(--text-secondary);
-        }
-
-        /* Lecturer selection specific */
-        .lecturer-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .lecturer-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: var(--radius-md);
-            text-align: center;
-            box-shadow: var(--shadow-md);
-            cursor: pointer;
-            transition: var(--transition);
-            border: 2px solid var(--border-color);
-        }
-
-        .lecturer-card:hover {
-            border-color: var(--primary-color);
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .lecturer-avatar {
-            width: 80px;
-            height: 80px;
-            background: var(--primary-light);
-            color: white;
-            border-radius: 50%;
+        body {
+            background-color: #0f172a;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
-            margin: 0 auto 1rem;
+            min-height: 100vh;
         }
 
-        /* Transitions */
-        .view-section {
-            display: none;
-            animation: fadeIn 0.4s ease-out;
+        .login-wrapper {
+            width: 100%;
+            max-width: 1000px;
+            padding: 2rem;
+            animation: fadeIn 0.6s ease-out;
         }
-
-        .view-section.active {
-            display: block;
-        }
-
-        .back-btn {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            padding: 0.5rem 0;
-        }
-
-        .back-btn:hover {
-            color: var(--primary-color);
-        }
-
-        .login-box-centered {
-            max-width: 450px;
-            margin: 0 auto;
-            background: white;
-            padding: 3rem;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-xl);
-            text-align: center;
-        }
-
-        .selected-user-info {
-            margin-bottom: 2rem;
-        }
-
-        .selected-user-icon {
-            font-size: 4rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-            display: block;
-        }
-
+        
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .lecturer-info {
-            cursor: pointer;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 1rem;
-            transition: opacity 0.2s;
-        }
-        
-        .lecturer-info:hover {
-            opacity: 0.8;
+        .login-header {
+            text-align: center;
+            margin-bottom: 4rem;
         }
 
-        .lecturer-actions {
+        .login-header i {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.3));
+        }
+
+        .login-header h1 {
+            color: white;
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.2rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .role-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .role-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 40px;
+            padding: 4rem 3rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .role-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .role-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .role-card:hover::before {
+            opacity: 1;
+        }
+
+        .role-card i {
+            display: block;
+            font-size: 4.5rem;
+            color: white;
+            margin-bottom: 2rem;
+            transition: all 0.4s;
+            position: relative;
+            z-index: 1;
+        }
+
+        .role-card:hover i {
+            transform: scale(1.1);
+            color: #818cf8;
+        }
+
+        .role-card h2 {
+            font-size: 2.4rem;
+            color: white;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+            position: relative;
+            z-index: 1;
+        }
+
+        .role-card p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1.1rem;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Lecturer Grid */
+        .lecturer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .lecturer-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 30px;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .lecturer-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-8px);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .lecturer-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+            border-radius: 28px;
             display: flex;
-            gap: 0.5rem;
+            align-items: center;
             justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+        }
+
+        .lecturer-card h3 {
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Forms */
+        .login-box-centered {
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 40px;
+            padding: 4rem;
+            text-align: center;
+            box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.6);
+        }
+
+        .selected-user-icon {
+            font-size: 5rem;
+            color: #818cf8;
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 0 15px rgba(129, 140, 248, 0.3));
+        }
+
+        .selected-user-info h2 {
+            color: white;
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+
+        .selected-user-info p {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 2.5rem;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 18px;
+            padding: 1.25rem;
+            font-size: 1.4rem;
+            transition: all 0.3s;
+            text-align: center;
+            letter-spacing: 4px;
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #6366f1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-5px);
+        }
+
+        .view-section {
+            display: none;
+        }
+
+        .view-section.active {
+            display: block;
+            animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         .btn-action {
-            flex: 1;
-            padding: 0.6rem 0.5rem;
-            border: none;
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            font-size: 0.85rem;
-            display: inline-flex;
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.4rem;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            font-weight: 500;
+            gap: 0.6rem;
+            margin-bottom: 0.75rem;
+            transition: all 0.2s;
         }
 
         .btn-action.login {
@@ -253,137 +349,135 @@ if (isset($_GET['timeout'])) {
         }
 
         .btn-action.view {
-            background: #64748b;
-            color: white;
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .btn-action:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            filter: brightness(110%);
-            color: white;
+            transform: scale(1.03);
+            filter: brightness(1.2);
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-wrapper">
-            
-            <div class="login-header">
-                <i class="fas fa-graduation-cap"></i>
-                <h1><?php echo APP_NAME; ?></h1>
-                <p>Attendance Management System</p>
-            </div>
-
-            <?php if ($error): ?>
-            <div class="alert alert-danger" style="max-width: 500px; margin: 0 auto 2rem;">
-                <i class="fas fa-exclamation-circle"></i>
-                <?php echo htmlspecialchars($error); ?>
-            </div>
-            <?php endif; ?>
-
-            <!-- View 1: Initial Role Selection -->
-            <div id="roleSelection" class="view-section active">
-                <div class="role-cards">
-                    <!-- Admin Card -->
-                    <div class="role-card" onclick="selectRole('admin')">
-                        <i class="fas fa-user-shield"></i>
-                        <h2>Admin</h2>
-                        <p>Login to manage system</p>
-                    </div>
-                    
-                    <!-- Lecturer Card -->
-                    <div class="role-card" onclick="selectRole('lecturer')">
-                        <i class="fas fa-chalkboard-teacher"></i>
-                        <h2>Lecturer</h2>
-                        <p>Login to mark attendance</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- View 2: Lecturer Selection -->
-            <div id="lecturerSelection" class="view-section">
-                <button class="back-btn" onclick="showView('roleSelection')">
-                    <i class="fas fa-arrow-left"></i> Back to Roles
-                </button>
-                <h2 style="text-align: center; color: white; margin-bottom: 1rem;">Select Profile</h2>
-                
-                <?php if (empty($lecturers)): ?>
-                    <div class="alert alert-info text-center">
-                        No lecturers found. Please login as Admin to add lecturers.
-                    </div>
-                <?php else: ?>
-                    <div class="lecturer-grid">
-                        <?php foreach ($lecturers as $lecturer): ?>
-                            <div class="lecturer-card">
-                                <div class="lecturer-info" onclick="selectLecturer('<?php echo htmlspecialchars($lecturer['username'] ?? ''); ?>', '<?php echo htmlspecialchars($lecturer['name']); ?>')">
-                                    <div class="lecturer-avatar">
-                                        <?php 
-                                            $initials = '';
-                                            $parts = explode(' ', $lecturer['name']);
-                                            foreach ($parts as $part) {
-                                                if (strlen($part) > 0) $initials .= $part[0];
-                                                if (strlen($initials) >= 2) break;
-                                            }
-                                            echo strtoupper($initials);
-                                        ?>
-                                    </div>
-                                    <h3><?php echo htmlspecialchars($lecturer['name']); ?></h3>
-                                </div>
-                                <div class="lecturer-actions">
-                                    <button class="btn-action login" onclick="selectLecturer('<?php echo htmlspecialchars($lecturer['username'] ?? ''); ?>', '<?php echo htmlspecialchars($lecturer['name']); ?>')">
-                                        <i class="fas fa-sign-in-alt"></i> Login
-                                    </button>
-                                    <a href="public_attendance_view.php?lecturer_id=<?php echo $lecturer['id']; ?>" class="btn-action view">
-                                        <i class="fas fa-list-alt"></i> View Attendance
-                                    </a>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
-            </div>
-
-            <!-- View 3: Login Form -->
-            <div id="loginFormSection" class="view-section">
-                <div class="login-box-centered">
-                    <button class="back-btn" onclick="goBackFromLogin()">
-                        <i class="fas fa-arrow-left"></i> Back
-                    </button>
-                    
-                    <div class="selected-user-info">
-                        <i id="selectedUserIcon" class="fas fa-user-circle selected-user-icon"></i>
-                        <h2 id="selectedUserName">User Name</h2>
-                        <p class="text-secondary">Enter your password to continue</p>
-                    </div>
-
-                    <form method="POST" action="" id="loginForm">
-                        <input type="hidden" name="username" id="usernameInput">
-                        
-                        <div class="form-group">
-                            <input 
-                                type="password" 
-                                id="password" 
-                                name="password" 
-                                class="form-control" 
-                                placeholder="Password"
-                                required
-                                style="text-align: center; font-size: 1.2rem; letter-spacing: 2px;"
-                            >
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary btn-block btn-lg">
-                            <i class="fas fa-sign-in-alt"></i> Login
-                        </button>
-                    </form>
-                </div>
-            </div>
-
+    <div class="login-wrapper">
+        <div class="login-header">
+            <i class="fas fa-graduation-cap"></i>
+            <h1>AMS Portal</h1>
+            <p>Smart Attendance Ecosystem</p>
         </div>
+
+        <?php if ($error): ?>
+        <div class="alert alert-danger" style="backdrop-filter: blur(10px); border-radius: 20px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.2); color: #fecaca; padding: 1.5rem; max-width: 500px; margin: 0 auto 3rem; text-align: center; font-weight: 600;">
+            <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem; color: #ef4444;"></i>
+            <?php echo htmlspecialchars($error); ?>
+        </div>
+        <?php endif; ?>
+
+        <!-- Role Selection -->
+        <div id="roleSelection" class="view-section active">
+            <div class="role-cards">
+                <div class="role-card" onclick="selectRole('admin')">
+                    <i class="fas fa-user-shield"></i>
+                    <h2>Administrator</h2>
+                    <p>System Management & Analytics</p>
+                </div>
+                
+                <div class="role-card" onclick="selectRole('lecturer')">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <h2>Lecturer</h2>
+                    <p>Manage Classes & Attendance</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lecturer Selection -->
+        <div id="lecturerSelection" class="view-section">
+            <div style="text-align: center; margin-bottom: 3rem;">
+                <button class="back-btn" onclick="showView('roleSelection')">
+                    <i class="fas fa-chevron-left"></i> Change Role
+                </button>
+                <h2 style="color: white; font-size: 2.5rem; font-weight: 800; letter-spacing: -0.04em;">Select your Profile</h2>
+            </div>
+            
+            <?php if (empty($lecturers)): ?>
+                <div class="login-box-centered">
+                    <i class="fas fa-info-circle" style="font-size: 3rem; color: #3b82f6; margin-bottom: 1rem;"></i>
+                    <h2 style="color: white;">No Profiles Found</h2>
+                    <p style="color: rgba(255,255,255,0.5);">Please contact system administrator to create your profile.</p>
+                </div>
+            <?php else: ?>
+                <div class="lecturer-grid">
+                    <?php foreach ($lecturers as $lecturer): ?>
+                        <div class="lecturer-card">
+                            <div class="lecturer-avatar">
+                                <?php 
+                                    $initials = '';
+                                    $parts = explode(' ', $lecturer['name']);
+                                    foreach ($parts as $part) {
+                                        if (strlen($part) > 0) $initials .= $part[0];
+                                        if (strlen($initials) >= 2) break;
+                                    }
+                                    echo strtoupper($initials);
+                                ?>
+                            </div>
+                            <h3><?php echo htmlspecialchars($lecturer['name']); ?></h3>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                <button class="btn-action login" onclick="selectLecturer('<?php echo htmlspecialchars($lecturer['username'] ?? ''); ?>', '<?php echo htmlspecialchars($lecturer['name']); ?>')">
+                                    <i class="fas fa-fingerprint"></i> Sign In
+                                </button>
+                                <a href="public_attendance_view.php?lecturer_id=<?php echo $lecturer['id']; ?>" class="btn-action view">
+                                    <i class="fas fa-eye"></i> View Only
+                                </a>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+
+        <!-- Login Form -->
+        <div id="loginFormSection" class="view-section">
+            <div class="login-box-centered">
+                <div style="text-align: left;">
+                    <button class="back-btn" onclick="goBackFromLogin()">
+                        <i class="fas fa-chevron-left"></i> Back
+                    </button>
+                </div>
+                
+                <div class="selected-user-info">
+                    <div id="selectedUserIconContainer">
+                        <i id="selectedUserIcon" class="fas fa-user-circle selected-user-icon"></i>
+                    </div>
+                    <h2 id="selectedUserName">User Name</h2>
+                    <p>Security Verification Required</p>
+                </div>
+
+                <form method="POST" action="" id="loginForm">
+                    <input type="hidden" name="username" id="usernameInput">
+                    
+                    <div style="margin-bottom: 2.5rem;">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            class="form-control" 
+                            placeholder="····"
+                            required
+                        >
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1.25rem; font-size: 1.1rem; border-radius: 18px; box-shadow: 0 15px 30px -10px rgba(99, 102, 241, 0.4);">
+                        Confirm & Access <i class="fas fa-arrow-right" style="margin-left: 0.5rem;"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
     </div>
     
     <script>
-        // State management
         const views = {
             roleSelection: document.getElementById('roleSelection'),
             lecturerSelection: document.getElementById('lecturerSelection'),
@@ -393,15 +487,13 @@ if (isset($_GET['timeout'])) {
         let previousView = 'roleSelection';
 
         function showView(viewName) {
-            // Hide all views
             Object.values(views).forEach(el => el.classList.remove('active'));
-            // Show selected view
             views[viewName].classList.add('active');
         }
 
         function selectRole(role) {
             if (role === 'admin') {
-                prepareLogin('admin', 'Administrator', 'fas fa-user-shield');
+                prepareLogin('admin', 'System Admin', 'fas fa-user-shield');
                 previousView = 'roleSelection';
                 showView('loginFormSection');
             } else {
@@ -420,30 +512,21 @@ if (isset($_GET['timeout'])) {
             document.getElementById('selectedUserName').textContent = displayName;
             document.getElementById('selectedUserIcon').className = iconClass + ' selected-user-icon';
             document.getElementById('password').value = '';
-            document.getElementById('password').focus();
+            setTimeout(() => document.getElementById('password').focus(), 500);
         }
 
         function goBackFromLogin() {
             showView(previousView);
         }
 
-        // Handle error state (if PHP returns error on POST)
         <?php if ($error): ?>
-            // If there was an error, we need to know where to go back to.
-            // Since PHP reloads the page, we might lose state.
-            // For now, we will default to Admin login if the username was admin, 
-            // but since we don't persist the 'target' easily without more complex logic,
-            // we will just show the role selection again or maybe try to infer?
-            // Actually, the error message is displayed at the top.
-            // A simple enhancement: check the posted username
             <?php if (isset($_POST['username']) && $_POST['username'] === 'admin'): ?>
                 selectRole('admin');
-            <?php elseif (isset($_POST['username'])): ?>
-                // For lecturers, we'd need to fuzzy match or just let them pick again.
-                // Let's just show the error and stay on role selection to be safe/simple
-                // Or better, if it's a lecturer login fail, show lecturer selection?
             <?php endif; ?>
         <?php endif; ?>
     </script>
+</body>
+</html>
+
 </body>
 </html>

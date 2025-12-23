@@ -102,52 +102,100 @@ try {
 }
 ?>
 
-<div class="card">
-    <div class="card-header">
-        <h2><i class="fas fa-chalkboard-teacher"></i> Manage Lecturers</h2>
-        <button onclick="openModal('createLecturerModal')" class="btn btn-primary btn-sm">
-            <i class="fas fa-plus"></i> Add Lecturer
-        </button>
+<div class="premium-banner">
+    <div class="banner-content">
+        <div class="banner-icon-wrapper">
+            <i class="fas fa-chalkboard-teacher"></i>
+        </div>
+        <div class="banner-text">
+            <h1>Faculty Management</h1>
+            <p>Oversee lecturer accounts and group assignments</p>
+        </div>
+        <div class="banner-actions">
+            <button onclick="openModal('createLecturerModal')" class="btn btn-primary">
+                <i class="fas fa-user-plus"></i> Add New Lecturer
+            </button>
+        </div>
     </div>
+</div>
+
+<div class="card">
     <div class="card-body">
         <?php if (empty($lecturers)): ?>
-            <p class="text-center" style="color: var(--text-secondary); padding: 2rem;">
-                <i class="fas fa-info-circle"></i> No lecturers added yet.
-            </p>
+            <div style="text-align: center; padding: 4rem 2rem; background: #f8fafc; border-radius: 20px; border: 2px dashed #e2e8f0;">
+                <i class="fas fa-user-tie" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1.5rem;"></i>
+                <h3 style="color: #64748b; font-weight: 700;">No Lecturers Registered</h3>
+                <p style="color: #94a3b8; margin-bottom: 2rem;">Register your first faculty member to begin assigning groups.</p>
+                <button onclick="openModal('createLecturerModal')" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Register Lecturer
+                </button>
+            </div>
         <?php else: ?>
             <div class="table-responsive">
                 <table id="lecturersTable">
                     <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Username</th>
-                            <th>Groups Assigned</th>
-                            <th>Created At</th>
-                            <th>Actions</th>
+                            <th>Academic Staff</th>
+                            <th>Contact Details</th>
+                            <th>Identity</th>
+                            <th>Assignments</th>
+                            <th>Status</th>
+                            <th class="text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($lecturers as $lecturer): ?>
-                        <tr>
-                            <td><strong><?php echo htmlspecialchars($lecturer['name']); ?></strong></td>
-                            <td><?php echo htmlspecialchars($lecturer['email']); ?></td>
-                            <td><?php echo htmlspecialchars($lecturer['phone']); ?></td>
-                            <td><?php echo htmlspecialchars($lecturer['username']); ?></td>
-                            <td><?php echo $lecturer['group_count']; ?> groups</td>
-                            <td><?php echo formatDate($lecturer['created_at']); ?></td>
+                        <tr style="transition: all 0.2s;">
                             <td>
-                                <button onclick="editLecturer(<?php echo $lecturer['id']; ?>, '<?php echo htmlspecialchars($lecturer['name'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($lecturer['email'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($lecturer['phone'], ENT_QUOTES); ?>')" class="btn btn-sm btn-warning">
-                                    <i class="fas fa-edit"></i> Edit
-                                </button>
-                                <form method="POST" style="display: inline;" onsubmit="return confirm('Delete this lecturer? This will also remove their user account.');">
-                                    <input type="hidden" name="action" value="delete">
-                                    <input type="hidden" name="id" value="<?php echo $lecturer['id']; ?>">
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        <i class="fas fa-trash"></i> Delete
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <div style="width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2);">
+                                        <?php echo strtoupper(substr($lecturer['name'], 0, 1)); ?>
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 700; color: #0f172a; font-size: 1rem;"><?php echo htmlspecialchars($lecturer['name']); ?></div>
+                                        <div style="font-size: 0.8rem; color: #64748b; font-weight: 500;">Joined <?php echo date('M Y', strtotime($lecturer['created_at'])); ?></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                    <div style="font-size: 0.85rem; color: #1e293b; font-weight: 600; display: flex; align-items: center; gap: 0.4rem;">
+                                        <i class="fas fa-envelope" style="color: #94a3b8; font-size: 0.75rem;"></i>
+                                        <?php echo htmlspecialchars($lecturer['email']); ?>
+                                    </div>
+                                    <div style="font-size: 0.8rem; color: #64748b; display: flex; align-items: center; gap: 0.4rem;">
+                                        <i class="fas fa-phone" style="color: #94a3b8; font-size: 0.75rem;"></i>
+                                        <?php echo htmlspecialchars($lecturer['phone'] ?: 'N/A'); ?>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <code style="padding: 0.3rem 0.6rem; background: #f1f5f9; border-radius: 8px; color: #475569; font-weight: 600; font-size: 0.85rem;">
+                                    @<?php echo htmlspecialchars($lecturer['username']); ?>
+                                </code>
+                            </td>
+                            <td>
+                                <span class="badge" style="background: #e0f2fe; color: #0369a1; font-weight: 800; letter-spacing: 0;">
+                                    <i class="fas fa-layer-group" style="margin-right: 0.3rem; font-size: 0.75rem;"></i>
+                                    <?php echo $lecturer['group_count']; ?> Groups
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge" style="background: #ecfdf5; color: #059669; font-weight: 800; font-size: 0.7rem; letter-spacing: 0.05em;">ACTIVE</span>
+                            </td>
+                            <td class="text-right">
+                                <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+                                    <button onclick="editLecturer(<?php echo $lecturer['id']; ?>, '<?php echo htmlspecialchars($lecturer['name'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($lecturer['email'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($lecturer['phone'], ENT_QUOTES); ?>')" class="btn btn-sm" style="background: #f1f5f9; color: #475569; border: none;" title="Edit Profile">
+                                        <i class="fas fa-user-edit"></i>
                                     </button>
-                                </form>
+                                    <form method="POST" style="display: inline;" onsubmit="return confirm('Archive this lecturer profile? This action cannot be undone.');">
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="id" value="<?php echo $lecturer['id']; ?>">
+                                        <button type="submit" class="btn btn-sm" style="background: #fee2e2; color: #991b1b; border: none;" title="Remove Access">
+                                            <i class="fas fa-user-slash"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                         <?php endforeach; ?>
