@@ -49,12 +49,12 @@
 ### As Admin:
 1. Change your password (recommended)
 2. Create a group (e.g., "Class 10A")
-3. Add a teacher
+3. Add a lecturer
 4. Add students to the group
-5. Assign teacher to the group
+5. Assign lecturer to the group
 6. Create partitions for the group
 
-### As Teacher:
+### As Lecturer:
 1. Login with credentials provided by admin
 2. View assigned groups
 3. Mark attendance for your classes

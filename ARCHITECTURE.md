@@ -2,7 +2,7 @@
 
 ## System Overview
 
-The Student Attendance Management System is a role-based web application with two primary user types: **Admin** and **Teacher**.
+The Student Attendance Management System is a role-based web application with two primary user types: **Admin** and **Lecturer**.
 
 ## Architecture Diagram
 
@@ -10,7 +10,7 @@ The Student Attendance Management System is a role-based web application with tw
 ┌─────────────────────────────────────────────────────────────┐
 │                    USER INTERFACE (Browser)                  │
 │  ┌──────────────┐              ┌──────────────┐            │
-│  │  Admin Panel │              │ Teacher Panel│            │
+│  │  Admin Panel │              │ Lecturer Panel│            │
 │  └──────────────┘              └──────────────┘            │
 └─────────────────────────────────────────────────────────────┘
                           │
@@ -22,7 +22,7 @@ The Student Attendance Management System is a role-based web application with tw
 │  └──────────────────────────────────────────────────────┘  │
 │  ┌──────────────────────────────────────────────────────┐  │
 │  │  Business Logic (CRUD Operations)                     │  │
-│  │  - Groups  - Teachers  - Students  - Partitions      │  │
+│  │  - Groups  - Lecturers  - Students  - Partitions      │  │
 │  │  - Attendance  - Reports  - Access Control           │  │
 │  └──────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────┘
@@ -45,14 +45,14 @@ Login → Dashboard → Choose Action
                       │
         ┌─────────────┼─────────────┬─────────────┬──────────────┐
         ▼             ▼             ▼             ▼              ▼
-   Create Group  Add Teacher  Add Student  Set Partitions  View Reports
+   Create Group  Add Lecturer  Add Student  Set Partitions  View Reports
         │             │             │             │              │
         ▼             ▼             ▼             ▼              ▼
    Assign        Create User   Assign to    Define Times   Filter & View
-   Teachers      Account       Group        & Days         Attendance
+   Lecturers      Account       Group        & Days         Attendance
 ```
 
-### Teacher Workflow
+### Lecturer Workflow
 
 ```
 Login → Dashboard → Choose Action
@@ -70,29 +70,29 @@ Login → Dashboard → Choose Action
 ## Database Relationships
 
 ```
-users (1) ──────────── (1) teachers
+users (1) ──────────── (1) lecturers
   │                           │
   │                           │
   │                      (M) group_assignments (M)
   │                           │
   │                           │
   └──────────────────────── groups (1)
-                              │
-                              │
-                         (M) students (1)
-                              │         │
-                              │         │
-                         (M) partitions │
-                              │         │
-                              └────┬────┘
-                                   │
-                                   ▼
-                              attendance
+                               │
+                               │
+                          (M) students (1)
+                               │         │
+                               │         │
+                          (M) partitions │
+                               │         │
+                               └────┬────┘
+                                    │
+                                    ▼
+                               attendance
 ```
 
 ### Relationship Details:
-- **1:1** - users ↔ teachers (One user account per teacher)
-- **M:M** - teachers ↔ groups (via group_assignments)
+- **1:1** - users ↔ lecturers (One user account per lecturer)
+- **M:M** - lecturers ↔ groups (via group_assignments)
 - **1:M** - groups → students (One group has many students)
 - **1:M** - groups → partitions (One group has many partitions)
 - **M:1** - attendance → students (Many records per student)
@@ -113,16 +113,16 @@ includes/
 ```
 admin/
 ├── dashboard.php       → Statistics & overview
-├── groups.php          → Group CRUD & teacher assignment
-├── teachers.php        → Teacher CRUD & user creation
+├── groups.php          → Group CRUD & lecturer assignment
+├── lecturers.php       → Lecturer CRUD & user creation
 ├── students.php        → Student CRUD & group assignment
 ├── partitions.php      → Partition CRUD with dynamic forms
 └── attendance.php      → View all attendance records
 ```
 
-### Teacher Module
+### Lecturer Module
 ```
-teacher/
+lecturer/
 ├── dashboard.php       → Personal statistics & schedule
 ├── mark_attendance.php → Mark student attendance
 ├── students.php        → View assigned students
@@ -171,7 +171,7 @@ js/
 ## Data Flow: Marking Attendance
 
 ```
-1. Teacher Login
+1. Lecturer Login
    └─→ Session Created with user_id, role, username
 
 2. Navigate to Mark Attendance
@@ -188,7 +188,7 @@ js/
    └─→ Add optional notes
 
 6. Submit Form
-   └─→ Validate: Teacher has access to group
+   └─→ Validate: Lecturer has access to group
    └─→ Begin transaction
    └─→ Insert/Update attendance records
    └─→ Commit transaction
@@ -228,7 +228,7 @@ js/
 Login Success
    └─→ $_SESSION['user_id'] = user ID
    └─→ $_SESSION['username'] = username
-   └─→ $_SESSION['role'] = 'admin' or 'teacher'
+   └─→ $_SESSION['role'] = 'admin' or 'lecturer'
    └─→ $_SESSION['last_activity'] = current timestamp
 
 Every Page Load
@@ -253,8 +253,8 @@ Logout
 
 ### Role-Based Access Control
 - `requireAdmin()` - Ensures only admins access admin pages
-- `requireTeacher()` - Ensures only teachers access teacher pages
-- `teacherHasAccessToGroup()` - Verifies teacher assignment
+- `requireLecturer()` - Ensures only lecturers access lecturer pages
+- `lecturerHasAccessToGroup()` - Verifies lecturer assignment
 - Automatic redirection on unauthorized access
 
 ### Attendance Marking
@@ -308,7 +308,7 @@ Try-Catch Blocks
 ## Future Scalability
 
 The system is designed to scale:
-- **Horizontal**: Add more teachers, groups, students
+- **Horizontal**: Add more lecturers, groups, students
 - **Vertical**: Add more features (email, SMS, analytics)
 - **Integration**: API endpoints can be added
 - **Mobile**: Responsive design ready for mobile apps

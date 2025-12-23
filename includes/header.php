@@ -267,29 +267,29 @@ require_once __DIR__ . '/functions.php';
                         <li><a href="<?php echo isset($baseUrl) ? $baseUrl : ''; ?>/admin/dashboard.php" class="<?php echo $currentScript == 'dashboard.php' ? 'active' : ''; ?>"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
                         <li><a href="<?php echo isset($baseUrl) ? $baseUrl : ''; ?>/admin/students.php" class="<?php echo $currentScript == 'students.php' ? 'active' : ''; ?>"><i class="fas fa-user-graduate"></i><span>Students</span></a></li>
                         <li><a href="<?php echo isset($baseUrl) ? $baseUrl : ''; ?>/admin/partitions.php" class="<?php echo $currentScript == 'partitions.php' ? 'active' : ''; ?>"><i class="fas fa-clock"></i><span>Schedule</span></a></li>
-                        <li><a href="<?php echo isset($baseUrl) ? $baseUrl : ''; ?>/admin/teachers.php" class="<?php echo $currentScript == 'teachers.php' ? 'active' : ''; ?>"><i class="fas fa-chalkboard-teacher"></i><span>Teachers</span></a></li>
+                        <li><a href="<?php echo isset($baseUrl) ? $baseUrl : ''; ?>/admin/lecturers.php" class="<?php echo $currentScript == 'lecturers.php' ? 'active' : ''; ?>"><i class="fas fa-chalkboard-teacher"></i><span>Lecturers</span></a></li>
                         <li><a href="<?php echo isset($baseUrl) ? $baseUrl : ''; ?>/admin/groups.php" class="<?php echo $currentScript == 'groups.php' ? 'active' : ''; ?>"><i class="fas fa-users"></i><span>Groups</span></a></li>
-                    <?php elseif (isTeacher()): ?>
-                        <li><a href="<?php echo isset($baseUrl) ? $baseUrl : ''; ?>/teacher/dashboard.php" class="<?php echo $currentScript == 'dashboard.php' ? 'active' : ''; ?>"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
-                        <li><a href="<?php echo isset($baseUrl) ? $baseUrl : ''; ?>/teacher/mark_attendance.php" class="<?php echo $currentScript == 'mark_attendance.php' ? 'active' : ''; ?>"><i class="fas fa-clipboard-check"></i><span>Mark</span></a></li>
-                        <li><a href="<?php echo isset($baseUrl) ? $baseUrl : ''; ?>/teacher/students.php" class="<?php echo $currentScript == 'students.php' ? 'active' : ''; ?>"><i class="fas fa-user-graduate"></i><span>Students</span></a></li>
-                        <li><a href="<?php echo isset($baseUrl) ? $baseUrl : ''; ?>/teacher/reports.php" class="<?php echo $currentScript == 'reports.php' ? 'active' : ''; ?>"><i class="fas fa-chart-line"></i><span>Reports</span></a></li>
-                        <li><a href="<?php echo isset($baseUrl) ? $baseUrl : ''; ?>/teacher/profile.php" class="<?php echo $currentScript == 'profile.php' ? 'active' : ''; ?>"><i class="fas fa-user-cog"></i><span>Profile</span></a></li>
+                    <?php elseif (isLecturer()): ?>
+                        <li><a href="<?php echo isset($baseUrl) ? $baseUrl : ''; ?>/lecturer/dashboard.php" class="<?php echo $currentScript == 'dashboard.php' ? 'active' : ''; ?>"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
+                        <li><a href="<?php echo isset($baseUrl) ? $baseUrl : ''; ?>/lecturer/mark_attendance.php" class="<?php echo $currentScript == 'mark_attendance.php' ? 'active' : ''; ?>"><i class="fas fa-clipboard-check"></i><span>Mark</span></a></li>
+                        <li><a href="<?php echo isset($baseUrl) ? $baseUrl : ''; ?>/lecturer/students.php" class="<?php echo $currentScript == 'students.php' ? 'active' : ''; ?>"><i class="fas fa-user-graduate"></i><span>Students</span></a></li>
+                        <li><a href="<?php echo isset($baseUrl) ? $baseUrl : ''; ?>/lecturer/reports.php" class="<?php echo $currentScript == 'reports.php' ? 'active' : ''; ?>"><i class="fas fa-chart-line"></i><span>Reports</span></a></li>
+                        <li><a href="<?php echo isset($baseUrl) ? $baseUrl : ''; ?>/lecturer/profile.php" class="<?php echo $currentScript == 'profile.php' ? 'active' : ''; ?>"><i class="fas fa-user-cog"></i><span>Profile</span></a></li>
                     <?php endif; ?>
                 </ul>
             </nav>
 
             <div class="user-area">
                 <div class="user-info">
-                    <span class="user-role"><?php echo isAdmin() ? 'Administrator' : 'Teacher'; ?></span>
+                    <span class="user-role"><?php echo isAdmin() ? 'Administrator' : 'Lecturer'; ?></span>
                     <span class="user-name"><?php echo htmlspecialchars($_SESSION['username']); ?></span>
                 </div>
                 <div class="user-avatar">
                    <?php echo strtoupper(substr($_SESSION['username'], 0, 1)); ?>
                 </div>
                 <div class="user-dropdown">
-                    <?php if (isTeacher()): ?>
-                        <a href="<?php echo isset($baseUrl) ? $baseUrl : ''; ?>/teacher/profile.php"><i class="fas fa-user-cog"></i> Profile Settings</a>
+                    <?php if (isLecturer()): ?>
+                        <a href="<?php echo isset($baseUrl) ? $baseUrl : ''; ?>/lecturer/profile.php"><i class="fas fa-user-cog"></i> Profile Settings</a>
                     <?php endif; ?>
                     <a href="<?php echo isset($baseUrl) ? $baseUrl : ''; ?>/logout.php" class="logout-link"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
                 </div>

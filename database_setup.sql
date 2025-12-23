@@ -4,19 +4,19 @@ DROP DATABASE IF EXISTS attendance_system;
 CREATE DATABASE attendance_system CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE attendance_system;
 
--- Users table (for admins and teachers)
+-- Users table (for admins and lecturers)
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    role ENUM('admin', 'teacher') NOT NULL,
+    role ENUM('admin', 'lecturer') NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_username (username),
     INDEX idx_role (role)
 ) ENGINE=InnoDB;
 
--- Teachers table (teacher details)
-CREATE TABLE teachers (
+-- Lecturers table (lecturer details)
+CREATE TABLE lecturers (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     name VARCHAR(100) NOT NULL,
@@ -50,17 +50,17 @@ CREATE TABLE students (
     INDEX idx_reg_no (reg_no)
 ) ENGINE=InnoDB;
 
--- Group assignments (many-to-many for teachers to groups)
+-- Group assignments (many-to-many for lecturers to groups)
 CREATE TABLE group_assignments (
     id INT AUTO_INCREMENT PRIMARY KEY,
     group_id INT NOT NULL,
-    teacher_id INT NOT NULL,
+    lecturer_id INT NOT NULL,
     assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE,
-    FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE,
-    UNIQUE KEY unique_assignment (group_id, teacher_id),
+    FOREIGN KEY (lecturer_id) REFERENCES lecturers(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_assignment (group_id, lecturer_id),
     INDEX idx_group_id (group_id),
-    INDEX idx_teacher_id (teacher_id)
+    INDEX idx_lecturer_id (lecturer_id)
 ) ENGINE=InnoDB;
 
 -- Partitions table (dynamic class sessions)
@@ -103,20 +103,20 @@ CREATE TABLE attendance (
 INSERT INTO users (username, password, role) VALUES 
 ('admin', '$2y$10$XcyYRW92Ov4TRwrKwzYmwOa3.HtK7Jh1GMlEfduOtbV4E2HC21Ogm', 'admin');
 
--- Teachers for each group (10 lecturers)
+-- Lecturers for each group (10 lecturers)
 INSERT INTO users (username, password, role) VALUES 
-('teacher1', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'teacher'),
-('teacher2', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'teacher'),
-('teacher3', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'teacher'),
-('teacher4', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'teacher'),
-('teacher5', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'teacher'),
-('teacher6', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'teacher'),
-('teacher7', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'teacher'),
-('teacher8', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'teacher'),
-('teacher9', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'teacher'),
-('teacher10', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'teacher');
+('lecturer1', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'lecturer'),
+('lecturer2', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'lecturer'),
+('lecturer3', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'lecturer'),
+('lecturer4', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'lecturer'),
+('lecturer5', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'lecturer'),
+('lecturer6', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'lecturer'),
+('lecturer7', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'lecturer'),
+('lecturer8', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'lecturer'),
+('lecturer9', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'lecturer'),
+('lecturer10', '$2y$10$FvU/MXpJkUzAyK9EveKrC.y4/13rRka8oIFOaTutVgcrfWRm3HlOG', 'lecturer');
 
-INSERT INTO teachers (user_id, name, email, phone) VALUES 
+INSERT INTO lecturers (user_id, name, email, phone) VALUES 
 (2, 'Lecturer Group 01', 'lecturer01@univ.jfn.ac.lk', '021-2218000'),
 (3, 'Lecturer Group 02', 'lecturer02@univ.jfn.ac.lk', '021-2218001'),
 (4, 'Lecturer Group 03', 'lecturer03@univ.jfn.ac.lk', '021-2218002'),
@@ -141,6 +141,6 @@ INSERT INTO groups (name, created_by) VALUES
 ('GROUP-09 (FSL Fisheries)', 1),
 ('GROUP-10 (CSH Computer Science)', 1);
 
--- Assign teachers to groups
-INSERT INTO group_assignments (group_id, teacher_id) VALUES 
+-- Assign lecturers to groups
+INSERT INTO group_assignments (group_id, lecturer_id) VALUES 
 (1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7), (8, 8), (9, 9), (10, 10);

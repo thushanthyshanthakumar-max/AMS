@@ -2,12 +2,12 @@
 $pageTitle = 'Mark Attendance';
 $baseUrl = '..';
 require_once '../includes/header.php';
-requireTeacher();
+requireLecturer();
 
-$teacherId = getTeacherId($pdo, $_SESSION['user_id']);
+$lecturerId = getLecturerId($pdo, $_SESSION['user_id']);
 
-if (!$teacherId) {
-    setFlashMessage('danger', 'Teacher profile not found.');
+if (!$lecturerId) {
+    setFlashMessage('danger', 'Lecturer profile not found.');
     redirect('../logout.php');
 }
 
@@ -19,8 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $date = $_POST['date'];
         $attendanceData = $_POST['attendance'] ?? [];
         
-        // Verify teacher has access to this group
-        if (!teacherHasAccessToGroup($pdo, $teacherId, $groupId)) {
+        // Verify lecturer has access to this group
+        if (!lecturerHasAccessToGroup($pdo, $lecturerId, $groupId)) {
             setFlashMessage('danger', 'You do not have access to this group.');
             redirect('mark_attendance.php');
         }
@@ -70,10 +70,10 @@ try {
         SELECT g.*
         FROM groups g
         JOIN group_assignments ga ON g.id = ga.group_id
-        WHERE ga.teacher_id = ?
+        WHERE ga.lecturer_id = ?
         ORDER BY g.name
     ");
-    $stmt->execute([$teacherId]);
+    $stmt->execute([$lecturerId]);
     $assignedGroups = $stmt->fetchAll();
 } catch (PDOException $e) {
     $assignedGroups = [];
@@ -91,14 +91,14 @@ if (!isset($_GET['group_id']) && !isset($_GET['partition_id'])) {
             FROM partitions p
             JOIN groups g ON p.group_id = g.id
             JOIN group_assignments ga ON g.id = ga.group_id
-            WHERE ga.teacher_id = ?
+            WHERE ga.lecturer_id = ?
             AND p.day_of_week = ?
             AND p.start_time <= ?
             AND p.end_time >= ?
             ORDER BY p.start_time
             LIMIT 1
         ");
-        $stmt->execute([$teacherId, $currentDay, $currentTime, $currentTime]);
+        $stmt->execute([$lecturerId, $currentDay, $currentTime, $currentTime]);
         $currentPartition = $stmt->fetch();
         
         if ($currentPartition) {
@@ -118,7 +118,7 @@ $existingAttendance = [];
 $selectedGroup = isset($_GET['group_id']) ? (int)$_GET['group_id'] : ($autoSelectedGroup ?? null);
 $selectedPartition = isset($_GET['partition_id']) ? (int)$_GET['partition_id'] : ($currentPartition['id'] ?? null);
 
-if ($selectedGroup && teacherHasAccessToGroup($pdo, $teacherId, $selectedGroup)) {
+if ($selectedGroup && lecturerHasAccessToGroup($pdo, $lecturerId, $selectedGroup)) {
     try {
         // Get partitions for this group
         $stmt = $pdo->prepare("SELECT * FROM partitions WHERE group_id = ? ORDER BY FIELD(day_of_week, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'), start_time");

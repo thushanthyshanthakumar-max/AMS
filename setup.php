@@ -33,7 +33,7 @@ try {
             id INT AUTO_INCREMENT PRIMARY KEY,
             username VARCHAR(50) UNIQUE NOT NULL,
             password VARCHAR(255) NOT NULL,
-            role ENUM('admin', 'teacher') NOT NULL,
+            role ENUM('admin', 'lecturer') NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             INDEX idx_username (username),
             INDEX idx_role (role)
@@ -41,7 +41,7 @@ try {
     ");
     
     $pdo->exec("
-        CREATE TABLE teachers (
+        CREATE TABLE lecturers (
             id INT AUTO_INCREMENT PRIMARY KEY,
             user_id INT NOT NULL,
             name VARCHAR(100) NOT NULL,
@@ -81,13 +81,13 @@ try {
         CREATE TABLE group_assignments (
             id INT AUTO_INCREMENT PRIMARY KEY,
             group_id INT NOT NULL,
-            teacher_id INT NOT NULL,
+            lecturer_id INT NOT NULL,
             assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE,
-            FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE,
-            UNIQUE KEY unique_assignment (group_id, teacher_id),
+            FOREIGN KEY (lecturer_id) REFERENCES lecturers(id) ON DELETE CASCADE,
+            UNIQUE KEY unique_assignment (group_id, lecturer_id),
             INDEX idx_group_id (group_id),
-            INDEX idx_teacher_id (teacher_id)
+            INDEX idx_lecturer_id (lecturer_id)
         ) ENGINE=InnoDB
     ");
     
@@ -139,15 +139,15 @@ try {
     
     echo "<p>✓ Admin user created (username: admin, password: admin123)</p>";
     
-    // Insert teacher user
-    $teacherPassword = password_hash('admin123', PASSWORD_DEFAULT);
-    $stmt = $pdo->prepare("INSERT INTO users (username, password, role) VALUES (?, ?, 'teacher')");
-    $stmt->execute(['teacher1', $teacherPassword]);
+    // Insert lecturer user
+    $lecturerPassword = password_hash('admin123', PASSWORD_DEFAULT);
+    $stmt = $pdo->prepare("INSERT INTO users (username, password, role) VALUES (?, ?, 'lecturer')");
+    $stmt->execute(['lecturer1', $lecturerPassword]);
     
-    echo "<p>✓ Teacher user created (username: teacher1, password: admin123)</p>";
+    echo "<p>✓ Lecturer user created (username: lecturer1, password: admin123)</p>";
     
-    // Insert teacher details
-    $pdo->exec("INSERT INTO teachers (user_id, name, email, phone) VALUES (2, 'John Smith', 'john.smith@school.com', '555-0101')");
+    // Insert lecturer details
+    $pdo->exec("INSERT INTO lecturers (user_id, name, email, phone) VALUES (2, 'John Smith', 'john.smith@school.com', '555-0101')");
     
     // Insert sample group
     $pdo->exec("INSERT INTO groups (name, created_by) VALUES ('Class 10A', 1)");
@@ -164,8 +164,8 @@ try {
     
     echo "<p>✓ Sample students added</p>";
     
-    // Assign teacher to group
-    $pdo->exec("INSERT INTO group_assignments (group_id, teacher_id) VALUES (1, 1)");
+    // Assign lecturer to group
+    $pdo->exec("INSERT INTO group_assignments (group_id, lecturer_id) VALUES (1, 1)");
     
     // Insert sample partitions
     $pdo->exec("
@@ -184,7 +184,7 @@ try {
     echo "<p><strong>You can now login with:</strong></p>";
     echo "<ul>";
     echo "<li>Admin: <code>admin</code> / <code>admin123</code></li>";
-    echo "<li>Teacher: <code>teacher1</code> / <code>admin123</code></li>";
+    echo "<li>Lecturer: <code>lecturer1</code> / <code>admin123</code></li>";
     echo "</ul>";
     echo "<p><a href='login.php' style='display: inline-block; padding: 10px 20px; background: #6366f1; color: white; text-decoration: none; border-radius: 5px;'>Go to Login Page</a></p>";
     echo "<hr>";

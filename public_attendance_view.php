@@ -2,30 +2,30 @@
 require_once 'includes/config.php';
 require_once 'includes/functions.php';
 
-// Get teacher ID
-$teacherId = isset($_GET['teacher_id']) ? (int)$_GET['teacher_id'] : 0;
+// Get lecturer ID
+$lecturerId = isset($_GET['lecturer_id']) ? (int)$_GET['lecturer_id'] : 0;
 
-if (!$teacherId) {
+if (!$lecturerId) {
     redirect('login.php');
 }
 
-// Fetch teacher details
+// Fetch lecturer details
 try {
-    $stmt = $pdo->prepare("SELECT name FROM teachers WHERE id = ?");
-    $stmt->execute([$teacherId]);
-    $teacher = $stmt->fetch();
+    $stmt = $pdo->prepare("SELECT name FROM lecturers WHERE id = ?");
+    $stmt->execute([$lecturerId]);
+    $lecturer = $stmt->fetch();
 
-    if (!$teacher) {
-        die("Teacher not found.");
+    if (!$lecturer) {
+        die("Lecturer not found.");
     }
 } catch (PDOException $e) {
-    die("Error fetching teacher details.");
+    die("Error fetching lecturer details.");
 }
 
 $selectedDate = isset($_GET['date']) ? $_GET['date'] : date('Y-m-d');
 $dayOfWeek = date('l', strtotime($selectedDate));
 
-// Fetch partitions/classes for this teacher on the selected date
+// Fetch partitions/classes for this lecturer on the selected date
 $partitions = [];
 try {
     $stmt = $pdo->prepare("
@@ -33,10 +33,10 @@ try {
         FROM partitions p
         JOIN groups g ON p.group_id = g.id
         JOIN group_assignments ga ON g.id = ga.group_id
-        WHERE ga.teacher_id = ? AND p.day_of_week = ?
+        WHERE ga.lecturer_id = ? AND p.day_of_week = ?
         ORDER BY p.start_time ASC
     ");
-    $stmt->execute([$teacherId, $dayOfWeek]);
+    $stmt->execute([$lecturerId, $dayOfWeek]);
     $partitions = $stmt->fetchAll();
 } catch (PDOException $e) {
     // Handle error
@@ -54,7 +54,7 @@ $selectedPartitionId = isset($_GET['partition_id']) ? (int)$_GET['partition_id']
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Attendance View - <?php echo htmlspecialchars($teacher['name']); ?></title>
+    <title>Attendance View - <?php echo htmlspecialchars($lecturer['name']); ?></title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -87,7 +87,7 @@ $selectedPartitionId = isset($_GET['partition_id']) ? (int)$_GET['partition_id']
             padding: 0 1rem;
         }
 
-        .teacher-banner {
+        .lecturer-banner {
             background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
             color: white;
             padding: 2rem;
@@ -216,18 +216,18 @@ $selectedPartitionId = isset($_GET['partition_id']) ? (int)$_GET['partition_id']
 
     <div class="container">
         
-        <div class="teacher-banner">
+        <div class="lecturer-banner">
             <div class="banner-icon">
                 <i class="fas fa-chalkboard-teacher"></i>
             </div>
             <div>
                 <h1 style="margin: 0; font-size: 1.75rem;">Public Attendance View</h1>
-                <p style="margin: 0.5rem 0 0; opacity: 0.9;">Teacher: <strong><?php echo htmlspecialchars($teacher['name']); ?></strong></p>
+                <p style="margin: 0.5rem 0 0; opacity: 0.9;">Lecturer: <strong><?php echo htmlspecialchars($lecturer['name']); ?></strong></p>
             </div>
         </div>
 
         <form method="GET" class="filters">
-            <input type="hidden" name="teacher_id" value="<?php echo $teacherId; ?>">
+            <input type="hidden" name="lecturer_id" value="<?php echo $lecturerId; ?>">
             <div class="form-group" style="margin: 0;">
                 <label for="date" style="display: block; font-size: 0.875rem; margin-bottom: 0.25rem; font-weight: 600;">Select Date</label>
                 <input type="date" id="date" name="date" class="form-control" value="<?php echo $selectedDate; ?>" onchange="this.form.submit()">
@@ -240,7 +240,7 @@ $selectedPartitionId = isset($_GET['partition_id']) ? (int)$_GET['partition_id']
 
         <?php if (empty($partitions)): ?>
             <div class="alert alert-info">
-                <i class="fas fa-info-circle"></i> No classes scheduled for this teacher on <?php echo $selectedDate; ?>.
+                <i class="fas fa-info-circle"></i> No classes scheduled for this lecturer on <?php echo $selectedDate; ?>.
             </div>
         <?php else: ?>
             <h3 style="margin-bottom: 1rem; color: var(--text-primary);">Classes</h3>
@@ -248,7 +248,7 @@ $selectedPartitionId = isset($_GET['partition_id']) ? (int)$_GET['partition_id']
                 <?php foreach ($partitions as $p): 
                     $isActive = ($selectedPartitionId == $p['id']);
                 ?>
-                    <a href="?teacher_id=<?php echo $teacherId; ?>&date=<?php echo $selectedDate; ?>&partition_id=<?php echo $p['id']; ?>" class="partition-card <?php echo $isActive ? 'active' : ''; ?>">
+                    <a href="?lecturer_id=<?php echo $lecturerId; ?>&date=<?php echo $selectedDate; ?>&partition_id=<?php echo $p['id']; ?>" class="partition-card <?php echo $isActive ? 'active' : ''; ?>">
                         <div class="time-badge">
                             <i class="far fa-clock"></i> 
                             <?php echo date('g:i A', strtotime($p['start_time'])); ?> - <?php echo date('g:i A', strtotime($p['end_time'])); ?>

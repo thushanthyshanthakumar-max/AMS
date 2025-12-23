@@ -1,24 +1,24 @@
 # Student Attendance Management System
 
-A comprehensive web-based attendance management system built with PHP, MySQL, HTML, CSS, and JavaScript. This system supports role-based access control for Admins and Teachers with full CRUD operations and reporting capabilities.
+A comprehensive web-based attendance management system built with PHP, MySQL, HTML, CSS, and JavaScript. This system supports role-based access control for Admins and Lecturers with full CRUD operations and reporting capabilities.
 
 ## Features
 
 ### Admin Features
-- **Dashboard**: Overview with statistics (groups, teachers, students, partitions)
-- **Group Management**: Create, edit, delete groups and assign teachers/students
-- **Teacher Management**: Add teachers with auto-generated passwords, manage accounts
+- **Dashboard**: Overview with statistics (groups, lecturers, students, partitions)
+- **Group Management**: Create, edit, delete groups and assign lecturers/students
+- **Lecturer Management**: Add lecturers with auto-generated passwords, manage accounts
 - **Student Management**: Add students, assign to groups, manage records
 - **Partition Management**: Create dynamic class sessions (e.g., Morning/Evening) with specific times and days
 - **Attendance Viewing**: View all attendance records with filtering
 - **Full Access Control**: Admins can view and manage all data
 
-### Teacher Features
+### Lecturer Features
 - **Dashboard**: View assigned groups, statistics, and scheduled partitions
 - **Mark Attendance**: Mark student attendance for assigned groups and partitions
 - **Student Management**: View students in assigned groups with attendance history
 - **Reports**: Generate attendance reports with date ranges and export to CSV
-- **Access Control**: Teachers can only access their assigned groups and students
+- **Access Control**: Lecturers can only access their assigned groups and students
 
 ## Technology Stack
 
@@ -90,8 +90,8 @@ http://localhost/AMS/login.php
 - **Username**: `admin`
 - **Password**: `admin123`
 
-### Teacher Account (Sample)
-- **Username**: `teacher1`
+### Lecturer Account (Sample)
+- **Username**: `lecturer1`
 - **Password**: `admin123`
 
 **Important**: Change these passwords immediately after first login!
@@ -103,11 +103,11 @@ AMS/
 ├── admin/                  # Admin pages
 │   ├── dashboard.php
 │   ├── groups.php
-│   ├── teachers.php
+│   ├── lecturers.php
 │   ├── students.php
 │   ├── partitions.php
 │   └── attendance.php
-├── teacher/                # Teacher pages
+├── lecturer/                # Lecturer pages
 │   ├── dashboard.php
 │   ├── mark_attendance.php
 │   ├── students.php
@@ -139,22 +139,22 @@ AMS/
    - Click "Create Group"
    - Enter group name (e.g., "Class 10A")
 
-2. **Add Teachers**
-   - Navigate to Teachers page
-   - Click "Add Teacher"
-   - Fill in teacher details
+2. **Add Lecturers**
+   - Navigate to Lecturers page
+   - Click "Add Lecturer"
+   - Fill in lecturer details
    - System generates username and password
-   - Provide credentials to teacher
+   - Provide credentials to lecturer
 
 3. **Add Students**
    - Navigate to Students page
    - Click "Add Student"
    - Fill in student details and select group
 
-4. **Assign Teachers to Groups**
+4. **Assign Lecturers to Groups**
    - Navigate to Groups page
    - Click "View" on a group
-   - Select teacher from dropdown and click "Assign Teacher"
+   - Select lecturer from dropdown and click "Assign Lecturer"
 
 5. **Create Partitions**
    - Navigate to Partitions page
@@ -166,7 +166,7 @@ AMS/
      - End time
      - Day of week
 
-### For Teachers
+### For Lecturers
 
 1. **Mark Attendance**
    - Navigate to "Mark Attendance"
@@ -189,11 +189,11 @@ AMS/
 ## Database Schema
 
 ### Tables
-- **users**: Admin and teacher accounts
-- **teachers**: Teacher profile information
+- **users**: Admin and lecturer accounts
+- **lecturers**: Lecturer profile information
 - **groups**: Class/group definitions
 - **students**: Student information
-- **group_assignments**: Teacher-to-group assignments
+- **group_assignments**: Lecturer-to-group assignments
 - **partitions**: Class session schedules
 - **attendance**: Attendance records
 
@@ -244,7 +244,6 @@ AMS/
 ### Code Standards
 - Use meaningful variable names
 - Comment complex logic
-- Follow PSR-12 coding standards
 - Sanitize all user inputs
 - Use prepared statements for queries
 
@@ -266,7 +265,12 @@ Developed as a comprehensive student attendance management solution.
 
 ## Version History
 
-### Version 1.0.0 (Current)
+### Version 1.1.0 (Current)
+- Refactored 'Teacher' to 'Lecturer' across the entire system
+- Updated database schema, file structure, and documentation
+- Consistent terminology in UI and backend
+
+### Version 1.0.0
 - Initial release
 - Admin and Teacher roles
 - Complete CRUD operations

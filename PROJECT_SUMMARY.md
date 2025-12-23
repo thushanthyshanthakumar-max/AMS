@@ -13,16 +13,16 @@
 
 #### User Roles
 - [x] Admin Role
-- [x] Teacher Role
+- [x] Lecturer Role
 - [x] Role-Based Access Control (RBAC)
 - [x] Session-Based Authentication
 
 #### Database Design
-- [x] Users table (admins & teachers)
-- [x] Teachers table (profile details)
+- [x] Users table (admins & lecturers)
+- [x] Lecturers table (profile details)
 - [x] Groups table (classes)
 - [x] Students table (student records)
-- [x] Group Assignments table (teacher-group mapping)
+- [x] Group Assignments table (lecturer-group mapping)
 - [x] Partitions table (dynamic class sessions)
 - [x] Attendance table (attendance records)
 - [x] Foreign key relationships
@@ -31,17 +31,17 @@
 #### Admin Features
 - [x] Admin Dashboard with statistics
 - [x] Create/Edit/Delete Groups
-- [x] Create/Edit/Delete Teachers
+- [x] Create/Edit/Delete Lecturers
 - [x] Create/Edit/Delete Students
-- [x] Assign Teachers to Groups
+- [x] Assign Lecturers to Groups
 - [x] Assign Students to Groups
 - [x] Create Dynamic Partitions (morning/evening classes)
 - [x] Set partition times and days
 - [x] View all attendance records
 - [x] Full data access and management
 
-#### Teacher Features
-- [x] Teacher Dashboard with assigned groups
+#### Lecturer Features
+- [x] Lecturer Dashboard with assigned groups
 - [x] Mark Attendance for assigned groups
 - [x] Select partition and date
 - [x] Mark students as Present/Absent/Late
@@ -109,7 +109,7 @@
 
 ### Database Tables: 7
 - users
-- teachers
+- lecturers
 - groups
 - students
 - group_assignments
@@ -144,11 +144,11 @@ AMS/
 ├── admin/                      # Admin module (6 files)
 │   ├── dashboard.php
 │   ├── groups.php
-│   ├── teachers.php
+│   ├── lecturers.php
 │   ├── students.php
 │   ├── partitions.php
 │   └── attendance.php
-├── teacher/                    # Teacher module (4 files)
+├── lecturer/                    # Lecturer module (4 files)
 │   ├── dashboard.php
 │   ├── mark_attendance.php
 │   ├── students.php
@@ -171,7 +171,7 @@ AMS/
 ├── .htaccess                   # Apache config
 ├── README.md                   # Main documentation
 ├── SETUP_GUIDE.md             # Quick setup guide
-└── ARCHITECTURE.md            # System architecture
+├── ARCHITECTURE.md            # System architecture
 ```
 
 ## 🚀 Quick Start
@@ -188,12 +188,12 @@ AMS/
 3. **Access**
    - URL: `http://localhost/AMS/login.php`
    - Admin: `admin` / `admin123`
-   - Teacher: `teacher1` / `admin123`
+   - Lecturer: `lecturer1` / `admin123`
 
 ## 🔑 Key Features Explained
 
 ### Dynamic Partitions
-Teachers can create multiple class sessions (partitions) for each group:
+Lecturers can create multiple class sessions (partitions) for each group:
 - Morning Class: 09:00 - 12:00 (Monday, Wednesday, Friday)
 - Evening Class: 14:00 - 17:00 (Tuesday, Thursday)
 - Custom times and days for each partition
@@ -214,7 +214,7 @@ Teachers can create multiple class sessions (partitions) for each group:
 
 ### Access Control
 - Admins: Full access to all data
-- Teachers: Only assigned groups
+- Lecturers: Only assigned groups
 - Automatic verification on each page
 - Secure session management
 
@@ -222,7 +222,7 @@ Teachers can create multiple class sessions (partitions) for each group:
 
 The database setup includes sample data:
 - 1 Admin user
-- 1 Teacher user
+- 1 Lecturer user
 - 1 Group (Class 10A)
 - 3 Students
 - 5 Partitions
@@ -237,7 +237,7 @@ The database setup includes sample data:
 
 2. **Authorization**
    - Role-based access control
-   - Teacher-group verification
+   - Lecturer-group verification
    - Page-level protection
 
 3. **Data Protection**
@@ -268,7 +268,7 @@ The system is fully responsive and works on:
 - Generate reports for parents
 - Identify students with low attendance
 
-### For Teachers
+### For Lecturers
 - Quick attendance marking
 - View student history
 - Export data for records
@@ -276,7 +276,7 @@ The system is fully responsive and works on:
 
 ### For Administrators
 - Manage all school data
-- Assign teachers to classes
+- Assign lecturers to classes
 - Create class schedules
 - Oversee attendance system
 
@@ -284,12 +284,12 @@ The system is fully responsive and works on:
 
 1. **Admin Setup**
    - Create group "Class 10A"
-   - Add teacher "John Smith"
+   - Add lecturer "John Smith"
    - Add 30 students
-   - Assign teacher to group
+   - Assign lecturer to group
    - Create partitions (Mon-Fri, 9AM-3PM)
 
-2. **Teacher Usage**
+2. **Lecturer Usage**
    - Login with credentials
    - Navigate to "Mark Attendance"
    - Select "Class 10A", "Morning Session", "Today"
@@ -305,7 +305,6 @@ The system is fully responsive and works on:
 ## 🌟 Highlights
 
 ### What Makes This System Special
-
 1. **User-Friendly Interface**
    - Intuitive navigation
    - Clear visual feedback
@@ -337,14 +336,12 @@ The system is fully responsive and works on:
    - Optimized performance
 
 ## 📚 Documentation
-
 - **README.md**: Complete user guide
 - **SETUP_GUIDE.md**: Quick installation
 - **ARCHITECTURE.md**: Technical details
 - **Inline Comments**: Code documentation
 
 ## 🎓 Learning Outcomes
-
 This project demonstrates:
 - Full-stack web development
 - Database design and normalization
@@ -358,7 +355,6 @@ This project demonstrates:
 - Transaction handling
 
 ## ✨ Future Enhancements
-
 Potential additions:
 - Email notifications
 - SMS integration
@@ -378,5 +374,5 @@ All requirements have been successfully implemented and tested. The system is pr
 ---
 
 **Developed**: December 2025
-**Version**: 1.0.0
+**Version**: 1.1.0 (Refactored to Lecturer)
 **Status**: Production Ready ✓

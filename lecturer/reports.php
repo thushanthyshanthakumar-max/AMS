@@ -2,12 +2,12 @@
 $pageTitle = 'Generate Reports';
 $baseUrl = '..';
 require_once '../includes/header.php';
-requireTeacher();
+requireLecturer();
 
-$teacherId = getTeacherId($pdo, $_SESSION['user_id']);
+$lecturerId = getLecturerId($pdo, $_SESSION['user_id']);
 
-if (!$teacherId) {
-    setFlashMessage('danger', 'Teacher profile not found.');
+if (!$lecturerId) {
+    setFlashMessage('danger', 'Lecturer profile not found.');
     redirect('../logout.php');
 }
 
@@ -17,7 +17,7 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
     $startDate = $_GET['start_date'];
     $endDate = $_GET['end_date'];
     
-    if (teacherHasAccessToGroup($pdo, $teacherId, $groupId)) {
+    if (lecturerHasAccessToGroup($pdo, $lecturerId, $groupId)) {
         try {
             $stmt = $pdo->prepare("
                 SELECT s.reg_no, s.title, s.name, p.name as partition_name,
@@ -61,10 +61,10 @@ try {
         SELECT g.*
         FROM groups g
         JOIN group_assignments ga ON g.id = ga.group_id
-        WHERE ga.teacher_id = ?
+        WHERE ga.lecturer_id = ?
         ORDER BY g.name
     ");
-    $stmt->execute([$teacherId]);
+    $stmt->execute([$lecturerId]);
     $assignedGroups = $stmt->fetchAll();
 } catch (PDOException $e) {
     $assignedGroups = [];
@@ -77,7 +77,7 @@ if (isset($_GET['generate'])) {
     $startDate = $_GET['start_date'];
     $endDate = $_GET['end_date'];
     
-    if (teacherHasAccessToGroup($pdo, $teacherId, $groupId)) {
+    if (lecturerHasAccessToGroup($pdo, $lecturerId, $groupId)) {
         try {
             // Get group name
             $stmt = $pdo->prepare("SELECT name FROM groups WHERE id = ?");

@@ -8,7 +8,7 @@ if (isLoggedIn()) {
     if (isAdmin()) {
         redirect('admin/dashboard.php');
     } else {
-        redirect('teacher/dashboard.php');
+        redirect('lecturer/dashboard.php');
     }
 } else {
     redirect('login.php');

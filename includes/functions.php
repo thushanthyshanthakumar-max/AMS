@@ -26,10 +26,10 @@ function isAdmin() {
 }
 
 /**
- * Check if user is teacher
+ * Check if user is lecturer
  */
-function isTeacher() {
-    return isLoggedIn() && $_SESSION['role'] === 'teacher';
+function isLecturer() {
+    return isLoggedIn() && $_SESSION['role'] === 'lecturer';
 }
 
 /**
@@ -73,11 +73,11 @@ function requireAdmin() {
 }
 
 /**
- * Require teacher role
+ * Require lecturer role
  */
-function requireTeacher() {
+function requireLecturer() {
     requireLogin();
-    if (!isTeacher()) {
+    if (!isLecturer()) {
         redirect('index.php');
     }
 }
@@ -168,21 +168,21 @@ function validatePhone($phone) {
 }
 
 /**
- * Get teacher ID from user ID
+ * Get lecturer ID from user ID
  */
-function getTeacherId($pdo, $userId) {
-    $stmt = $pdo->prepare("SELECT id FROM teachers WHERE user_id = ?");
+function getLecturerId($pdo, $userId) {
+    $stmt = $pdo->prepare("SELECT id FROM lecturers WHERE user_id = ?");
     $stmt->execute([$userId]);
     $result = $stmt->fetch();
     return $result ? $result['id'] : null;
 }
 
 /**
- * Check if teacher has access to group
+ * Check if lecturer has access to group
  */
-function teacherHasAccessToGroup($pdo, $teacherId, $groupId) {
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM group_assignments WHERE teacher_id = ? AND group_id = ?");
-    $stmt->execute([$teacherId, $groupId]);
+function lecturerHasAccessToGroup($pdo, $lecturerId, $groupId) {
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM group_assignments WHERE lecturer_id = ? AND group_id = ?");
+    $stmt->execute([$lecturerId, $groupId]);
     return $stmt->fetchColumn() > 0;
 }
 

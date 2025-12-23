@@ -1,13 +1,13 @@
 <?php
-$pageTitle = 'Teacher Dashboard';
+$pageTitle = 'Lecturer Dashboard';
 $baseUrl = '..';
 require_once '../includes/header.php';
-requireTeacher();
+requireLecturer();
 
-$teacherId = getTeacherId($pdo, $_SESSION['user_id']);
+$lecturerId = getLecturerId($pdo, $_SESSION['user_id']);
 
-if (!$teacherId) {
-    setFlashMessage('danger', 'Teacher profile not found.');
+if (!$lecturerId) {
+    setFlashMessage('danger', 'Lecturer profile not found.');
     redirect('../logout.php');
 }
 
@@ -18,10 +18,10 @@ try {
                (SELECT COUNT(*) FROM students WHERE group_id = g.id) as student_count
         FROM groups g
         JOIN group_assignments ga ON g.id = ga.group_id
-        WHERE ga.teacher_id = ?
+        WHERE ga.lecturer_id = ?
         ORDER BY g.name
     ");
-    $stmt->execute([$teacherId]);
+    $stmt->execute([$lecturerId]);
     $assignedGroups = $stmt->fetchAll();
     
     // Get total students in assigned groups
@@ -29,9 +29,9 @@ try {
         SELECT COUNT(DISTINCT s.id) as total
         FROM students s
         JOIN group_assignments ga ON s.group_id = ga.group_id
-        WHERE ga.teacher_id = ?
+        WHERE ga.lecturer_id = ?
     ");
-    $stmt->execute([$teacherId]);
+    $stmt->execute([$lecturerId]);
     $totalStudents = $stmt->fetchColumn();
     
     // Get upcoming partitions (today and next 7 days)
@@ -40,7 +40,7 @@ try {
         FROM partitions p
         JOIN groups g ON p.group_id = g.id
         JOIN group_assignments ga ON g.id = ga.group_id
-        WHERE ga.teacher_id = ?
+        WHERE ga.lecturer_id = ?
         ORDER BY 
             CASE p.day_of_week
                 WHEN 'Monday' THEN 1
@@ -54,10 +54,10 @@ try {
             p.start_time
         LIMIT 10
     ");
-    $stmt->execute([$teacherId]);
+    $stmt->execute([$lecturerId]);
     $upcomingPartitions = $stmt->fetchAll();
     
-    // Get recent attendance marked by this teacher
+    // Get recent attendance marked by this lecturer
     $stmt = $pdo->prepare("
         SELECT COUNT(*) as total
         FROM attendance

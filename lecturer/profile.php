@@ -2,9 +2,9 @@
 $pageTitle = 'My Profile';
 $baseUrl = '..';
 require_once '../includes/header.php';
-requireTeacher();
+requireLecturer();
 
-$teacherId = getTeacherId($pdo, $_SESSION['user_id']);
+$lecturerId = getLecturerId($pdo, $_SESSION['user_id']);
 $userId = $_SESSION['user_id'];
 
 // Handle password update
@@ -43,18 +43,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
 }
 
-// Get teacher details
+// Get lecturer details
 try {
     $stmt = $pdo->prepare("
-        SELECT t.*, u.username 
-        FROM teachers t 
-        JOIN users u ON t.user_id = u.id 
-        WHERE t.id = ?
+        SELECT l.*, u.username 
+        FROM lecturers l 
+        JOIN users u ON l.user_id = u.id 
+        WHERE l.id = ?
     ");
-    $stmt->execute([$teacherId]);
-    $teacher = $stmt->fetch();
+    $stmt->execute([$lecturerId]);
+    $lecturer = $stmt->fetch();
 } catch (PDOException $e) {
-    $teacher = null;
+    $lecturer = null;
 }
 ?>
 
@@ -73,7 +73,7 @@ try {
                 <div style="margin-bottom: 1.5rem;">
                     <label style="font-weight: 600; color: var(--text-secondary);">Full Name</label>
                     <div style="font-size: 1.25rem; color: var(--text-primary);">
-                        <?php echo htmlspecialchars($teacher['name']); ?>
+                        <?php echo htmlspecialchars($lecturer['name']); ?>
                     </div>
                 </div>
                 
@@ -81,7 +81,7 @@ try {
                     <label style="font-weight: 600; color: var(--text-secondary);">Username</label>
                     <div style="font-size: 1.25rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
                         <i class="fas fa-user-tag text-secondary"></i>
-                        <?php echo htmlspecialchars($teacher['username']); ?>
+                        <?php echo htmlspecialchars($lecturer['username']); ?>
                     </div>
                 </div>
                 
@@ -89,7 +89,7 @@ try {
                     <label style="font-weight: 600; color: var(--text-secondary);">Email</label>
                     <div style="font-size: 1.25rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
                         <i class="fas fa-envelope text-secondary"></i>
-                        <?php echo htmlspecialchars($teacher['email']); ?>
+                        <?php echo htmlspecialchars($lecturer['email']); ?>
                     </div>
                 </div>
 

@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Manage Teachers';
+$pageTitle = 'Manage Lecturers';
 $baseUrl = '..';
 require_once '../includes/header.php';
 requireAdmin();
@@ -32,17 +32,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         
                         // Create user
                         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-                        $stmt = $pdo->prepare("INSERT INTO users (username, password, role) VALUES (?, ?, 'teacher')");
+                        $stmt = $pdo->prepare("INSERT INTO users (username, password, role) VALUES (?, ?, 'lecturer')");
                         $stmt->execute([$username, $hashedPassword]);
                         $userId = $pdo->lastInsertId();
                         
-                        // Create teacher
-                        $stmt = $pdo->prepare("INSERT INTO teachers (user_id, name, email, phone) VALUES (?, ?, ?, ?)");
+                        // Create lecturer
+                        $stmt = $pdo->prepare("INSERT INTO lecturers (user_id, name, email, phone) VALUES (?, ?, ?, ?)");
                         $stmt->execute([$userId, $name, $email, $phone]);
                         
                         $pdo->commit();
-                        setFlashMessage('success', 'Teacher created successfully.');
-                        redirect('teachers.php');
+                        setFlashMessage('success', 'Lecturer created successfully.');
+                        redirect('lecturers.php');
                     }
                 }
             } elseif ($_POST['action'] === 'update') {
@@ -56,26 +56,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } elseif (!validateEmail($email)) {
                     setFlashMessage('danger', 'Invalid email format.');
                 } else {
-                    $stmt = $pdo->prepare("UPDATE teachers SET name = ?, email = ?, phone = ? WHERE id = ?");
+                    $stmt = $pdo->prepare("UPDATE lecturers SET name = ?, email = ?, phone = ? WHERE id = ?");
                     $stmt->execute([$name, $email, $phone, $id]);
-                    setFlashMessage('success', 'Teacher updated successfully.');
-                    redirect('teachers.php');
+                    setFlashMessage('success', 'Lecturer updated successfully.');
+                    redirect('lecturers.php');
                 }
             } elseif ($_POST['action'] === 'delete') {
                 $id = (int)$_POST['id'];
                 
                 // Get user_id first
-                $stmt = $pdo->prepare("SELECT user_id FROM teachers WHERE id = ?");
+                $stmt = $pdo->prepare("SELECT user_id FROM lecturers WHERE id = ?");
                 $stmt->execute([$id]);
-                $teacher = $stmt->fetch();
+                $lecturer = $stmt->fetch();
                 
-                if ($teacher) {
-                    // Delete user (will cascade delete teacher)
+                if ($lecturer) {
+                    // Delete user (will cascade delete lecturer)
                     $stmt = $pdo->prepare("DELETE FROM users WHERE id = ?");
-                    $stmt->execute([$teacher['user_id']]);
-                    setFlashMessage('success', 'Teacher deleted successfully.');
+                    $stmt->execute([$lecturer['user_id']]);
+                    setFlashMessage('success', 'Lecturer deleted successfully.');
                 }
-                redirect('teachers.php');
+                redirect('lecturers.php');
             }
         } catch (PDOException $e) {
             if ($pdo->inTransaction()) {
@@ -86,37 +86,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Get all teachers
+// Get all lecturers
 try {
     $stmt = $pdo->query("
-        SELECT t.*, u.username,
-               (SELECT COUNT(DISTINCT ga.group_id) FROM group_assignments ga WHERE ga.teacher_id = t.id) as group_count
-        FROM teachers t
-        JOIN users u ON t.user_id = u.id
-        ORDER BY t.created_at DESC
+        SELECT l.*, u.username,
+               (SELECT COUNT(DISTINCT ga.group_id) FROM group_assignments ga WHERE ga.lecturer_id = l.id) as group_count
+        FROM lecturers l
+        JOIN users u ON l.user_id = u.id
+        ORDER BY l.created_at DESC
     ");
-    $teachers = $stmt->fetchAll();
+    $lecturers = $stmt->fetchAll();
 } catch (PDOException $e) {
-    setFlashMessage('danger', 'Error loading teachers.');
-    $teachers = [];
+    setFlashMessage('danger', 'Error loading lecturers.');
+    $lecturers = [];
 }
 ?>
 
 <div class="card">
     <div class="card-header">
-        <h2><i class="fas fa-chalkboard-teacher"></i> Manage Teachers</h2>
-        <button onclick="openModal('createTeacherModal')" class="btn btn-primary btn-sm">
-            <i class="fas fa-plus"></i> Add Teacher
+        <h2><i class="fas fa-chalkboard-teacher"></i> Manage Lecturers</h2>
+        <button onclick="openModal('createLecturerModal')" class="btn btn-primary btn-sm">
+            <i class="fas fa-plus"></i> Add Lecturer
         </button>
     </div>
     <div class="card-body">
-        <?php if (empty($teachers)): ?>
+        <?php if (empty($lecturers)): ?>
             <p class="text-center" style="color: var(--text-secondary); padding: 2rem;">
-                <i class="fas fa-info-circle"></i> No teachers added yet.
+                <i class="fas fa-info-circle"></i> No lecturers added yet.
             </p>
         <?php else: ?>
             <div class="table-responsive">
-                <table id="teachersTable">
+                <table id="lecturersTable">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -129,21 +129,21 @@ try {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($teachers as $teacher): ?>
+                        <?php foreach ($lecturers as $lecturer): ?>
                         <tr>
-                            <td><strong><?php echo htmlspecialchars($teacher['name']); ?></strong></td>
-                            <td><?php echo htmlspecialchars($teacher['email']); ?></td>
-                            <td><?php echo htmlspecialchars($teacher['phone']); ?></td>
-                            <td><?php echo htmlspecialchars($teacher['username']); ?></td>
-                            <td><?php echo $teacher['group_count']; ?> groups</td>
-                            <td><?php echo formatDate($teacher['created_at']); ?></td>
+                            <td><strong><?php echo htmlspecialchars($lecturer['name']); ?></strong></td>
+                            <td><?php echo htmlspecialchars($lecturer['email']); ?></td>
+                            <td><?php echo htmlspecialchars($lecturer['phone']); ?></td>
+                            <td><?php echo htmlspecialchars($lecturer['username']); ?></td>
+                            <td><?php echo $lecturer['group_count']; ?> groups</td>
+                            <td><?php echo formatDate($lecturer['created_at']); ?></td>
                             <td>
-                                <button onclick="editTeacher(<?php echo $teacher['id']; ?>, '<?php echo htmlspecialchars($teacher['name'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($teacher['email'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($teacher['phone'], ENT_QUOTES); ?>')" class="btn btn-sm btn-warning">
+                                <button onclick="editLecturer(<?php echo $lecturer['id']; ?>, '<?php echo htmlspecialchars($lecturer['name'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($lecturer['email'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($lecturer['phone'], ENT_QUOTES); ?>')" class="btn btn-sm btn-warning">
                                     <i class="fas fa-edit"></i> Edit
                                 </button>
-                                <form method="POST" style="display: inline;" onsubmit="return confirm('Delete this teacher? This will also remove their user account.');">
+                                <form method="POST" style="display: inline;" onsubmit="return confirm('Delete this lecturer? This will also remove their user account.');">
                                     <input type="hidden" name="action" value="delete">
-                                    <input type="hidden" name="id" value="<?php echo $teacher['id']; ?>">
+                                    <input type="hidden" name="id" value="<?php echo $lecturer['id']; ?>">
                                     <button type="submit" class="btn btn-sm btn-danger">
                                         <i class="fas fa-trash"></i> Delete
                                     </button>
@@ -158,12 +158,12 @@ try {
     </div>
 </div>
 
-<!-- Create Teacher Modal -->
-<div id="createTeacherModal" class="modal">
+<!-- Create Lecturer Modal -->
+<div id="createLecturerModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3><i class="fas fa-plus"></i> Add New Teacher</h3>
-            <button class="modal-close" onclick="closeModal('createTeacherModal')">&times;</button>
+            <h3><i class="fas fa-plus"></i> Add New Lecturer</h3>
+            <button class="modal-close" onclick="closeModal('createLecturerModal')">&times;</button>
         </div>
         <form method="POST">
             <div class="modal-body">
@@ -198,21 +198,21 @@ try {
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeModal('createTeacherModal')">Cancel</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('createLecturerModal')">Cancel</button>
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Add Teacher
+                    <i class="fas fa-save"></i> Add Lecturer
                 </button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- Edit Teacher Modal -->
-<div id="editTeacherModal" class="modal">
+<!-- Edit Lecturer Modal -->
+<div id="editLecturerModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3><i class="fas fa-edit"></i> Edit Teacher</h3>
-            <button class="modal-close" onclick="closeModal('editTeacherModal')">&times;</button>
+            <h3><i class="fas fa-edit"></i> Edit Lecturer</h3>
+            <button class="modal-close" onclick="closeModal('editLecturerModal')">&times;</button>
         </div>
         <form method="POST">
             <div class="modal-body">
@@ -235,9 +235,9 @@ try {
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeModal('editTeacherModal')">Cancel</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('editLecturerModal')">Cancel</button>
                 <button type="submit" class="btn btn-warning">
-                    <i class="fas fa-save"></i> Update Teacher
+                    <i class="fas fa-save"></i> Update Lecturer
                 </button>
             </div>
         </form>
@@ -245,12 +245,12 @@ try {
 </div>
 
 <script>
-function editTeacher(id, name, email, phone) {
+function editLecturer(id, name, email, phone) {
     document.getElementById('edit_id').value = id;
     document.getElementById('edit_name').value = name;
     document.getElementById('edit_email').value = email;
     document.getElementById('edit_phone').value = phone;
-    openModal('editTeacherModal');
+    openModal('editLecturerModal');
 }
 
 function generateRandomPassword() {

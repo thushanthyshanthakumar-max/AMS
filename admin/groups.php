@@ -37,21 +37,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute([$id]);
                 setFlashMessage('success', 'Group deleted successfully.');
                 redirect('groups.php');
-            } elseif ($_POST['action'] === 'assign_teacher') {
+            } elseif ($_POST['action'] === 'assign_lecturer') {
                 $groupId = (int)$_POST['group_id'];
-                $teacherId = (int)$_POST['teacher_id'];
+                $lecturerId = (int)$_POST['lecturer_id'];
                 
-                $stmt = $pdo->prepare("INSERT IGNORE INTO group_assignments (group_id, teacher_id) VALUES (?, ?)");
-                $stmt->execute([$groupId, $teacherId]);
-                setFlashMessage('success', 'Teacher assigned successfully.');
+                $stmt = $pdo->prepare("INSERT IGNORE INTO group_assignments (group_id, lecturer_id) VALUES (?, ?)");
+                $stmt->execute([$groupId, $lecturerId]);
+                setFlashMessage('success', 'Lecturer assigned successfully.');
                 redirect('groups.php?view=' . $groupId);
-            } elseif ($_POST['action'] === 'remove_teacher') {
+            } elseif ($_POST['action'] === 'remove_lecturer') {
                 $groupId = (int)$_POST['group_id'];
-                $teacherId = (int)$_POST['teacher_id'];
+                $lecturerId = (int)$_POST['lecturer_id'];
                 
-                $stmt = $pdo->prepare("DELETE FROM group_assignments WHERE group_id = ? AND teacher_id = ?");
-                $stmt->execute([$groupId, $teacherId]);
-                setFlashMessage('success', 'Teacher removed successfully.');
+                $stmt = $pdo->prepare("DELETE FROM group_assignments WHERE group_id = ? AND lecturer_id = ?");
+                $stmt->execute([$groupId, $lecturerId]);
+                setFlashMessage('success', 'Lecturer removed successfully.');
                 redirect('groups.php?view=' . $groupId);
             }
         } catch (PDOException $e) {
@@ -65,7 +65,7 @@ try {
     $stmt = $pdo->query("
         SELECT g.*, u.username as created_by_name,
                (SELECT COUNT(*) FROM students WHERE group_id = g.id) as student_count,
-               (SELECT COUNT(*) FROM group_assignments WHERE group_id = g.id) as teacher_count
+               (SELECT COUNT(*) FROM group_assignments WHERE group_id = g.id) as lecturer_count
         FROM groups g
         JOIN users u ON g.created_by = u.id
         ORDER BY g.created_at DESC
@@ -91,28 +91,28 @@ if (isset($_GET['view'])) {
             $stmt->execute([$groupId]);
             $groupStudents = $stmt->fetchAll();
             
-            // Get assigned teachers
+            // Get assigned lecturers
             $stmt = $pdo->prepare("
-                SELECT t.*, u.username 
-                FROM teachers t
-                JOIN users u ON t.user_id = u.id
-                JOIN group_assignments ga ON t.id = ga.teacher_id
+                SELECT l.*, u.username 
+                FROM lecturers l
+                JOIN users u ON l.user_id = u.id
+                JOIN group_assignments ga ON l.id = ga.lecturer_id
                 WHERE ga.group_id = ?
             ");
             $stmt->execute([$groupId]);
-            $assignedTeachers = $stmt->fetchAll();
+            $assignedLecturers = $stmt->fetchAll();
             
-            // Get available teachers (not assigned)
+            // Get available lecturers (not assigned)
             $stmt = $pdo->prepare("
-                SELECT t.*, u.username 
-                FROM teachers t
-                JOIN users u ON t.user_id = u.id
-                WHERE t.id NOT IN (
-                    SELECT teacher_id FROM group_assignments WHERE group_id = ?
+                SELECT l.*, u.username 
+                FROM lecturers l
+                JOIN users u ON l.user_id = u.id
+                WHERE l.id NOT IN (
+                    SELECT lecturer_id FROM group_assignments WHERE group_id = ?
                 )
             ");
             $stmt->execute([$groupId]);
-            $availableTeachers = $stmt->fetchAll();
+            $availableLecturers = $stmt->fetchAll();
         }
     } catch (PDOException $e) {
         setFlashMessage('danger', 'Error loading group details.');
@@ -131,15 +131,15 @@ if (isset($_GET['view'])) {
         </div>
     </div>
     
-    <!-- Assigned Teachers -->
+    <!-- Assigned Lecturers -->
     <div class="card">
         <div class="card-header">
-            <h2><i class="fas fa-chalkboard-teacher"></i> Assigned Teachers</h2>
+            <h2><i class="fas fa-chalkboard-teacher"></i> Assigned Lecturers</h2>
         </div>
         <div class="card-body">
-            <?php if (empty($assignedTeachers)): ?>
+            <?php if (empty($assignedLecturers)): ?>
                 <p class="text-center" style="color: var(--text-secondary); padding: 1rem;">
-                    No teachers assigned yet.
+                    No lecturers assigned yet.
                 </p>
             <?php else: ?>
                 <div class="table-responsive">
@@ -154,17 +154,17 @@ if (isset($_GET['view'])) {
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($assignedTeachers as $teacher): ?>
+                            <?php foreach ($assignedLecturers as $lecturer): ?>
                             <tr>
-                                <td><?php echo htmlspecialchars($teacher['name']); ?></td>
-                                <td><?php echo htmlspecialchars($teacher['email']); ?></td>
-                                <td><?php echo htmlspecialchars($teacher['phone']); ?></td>
-                                <td><?php echo htmlspecialchars($teacher['username']); ?></td>
+                                <td><?php echo htmlspecialchars($lecturer['name']); ?></td>
+                                <td><?php echo htmlspecialchars($lecturer['email']); ?></td>
+                                <td><?php echo htmlspecialchars($lecturer['phone']); ?></td>
+                                <td><?php echo htmlspecialchars($lecturer['username']); ?></td>
                                 <td>
-                                    <form method="POST" style="display: inline;" onsubmit="return confirm('Remove this teacher from the group?');">
-                                        <input type="hidden" name="action" value="remove_teacher">
+                                    <form method="POST" style="display: inline;" onsubmit="return confirm('Remove this lecturer from the group?');">
+                                        <input type="hidden" name="action" value="remove_lecturer">
                                         <input type="hidden" name="group_id" value="<?php echo $viewGroup['id']; ?>">
-                                        <input type="hidden" name="teacher_id" value="<?php echo $teacher['id']; ?>">
+                                        <input type="hidden" name="lecturer_id" value="<?php echo $lecturer['id']; ?>">
                                         <button type="submit" class="btn btn-sm btn-danger">
                                             <i class="fas fa-times"></i> Remove
                                         </button>
@@ -177,21 +177,21 @@ if (isset($_GET['view'])) {
                 </div>
             <?php endif; ?>
             
-            <?php if (!empty($availableTeachers)): ?>
+            <?php if (!empty($availableLecturers)): ?>
                 <form method="POST" class="mt-3">
-                    <input type="hidden" name="action" value="assign_teacher">
+                    <input type="hidden" name="action" value="assign_lecturer">
                     <input type="hidden" name="group_id" value="<?php echo $viewGroup['id']; ?>">
                     <div class="d-flex gap-2 align-center">
-                        <select name="teacher_id" class="form-control" required>
-                            <option value="">Select a teacher to assign...</option>
-                            <?php foreach ($availableTeachers as $teacher): ?>
-                                <option value="<?php echo $teacher['id']; ?>">
-                                    <?php echo htmlspecialchars($teacher['name']); ?> (<?php echo htmlspecialchars($teacher['email']); ?>)
+                        <select name="lecturer_id" class="form-control" required>
+                            <option value="">Select a lecturer to assign...</option>
+                            <?php foreach ($availableLecturers as $lecturer): ?>
+                                <option value="<?php echo $lecturer['id']; ?>">
+                                    <?php echo htmlspecialchars($lecturer['name']); ?> (<?php echo htmlspecialchars($lecturer['email']); ?>)
                                 </option>
                             <?php endforeach; ?>
                         </select>
                         <button type="submit" class="btn btn-success">
-                            <i class="fas fa-plus"></i> Assign Teacher
+                            <i class="fas fa-plus"></i> Assign Lecturer
                         </button>
                     </div>
                 </form>
@@ -264,7 +264,7 @@ if (isset($_GET['view'])) {
                             <tr>
                                 <th>Group Name</th>
                                 <th>Students</th>
-                                <th>Teachers</th>
+                                <th>Lecturers</th>
                                 <th>Created By</th>
                                 <th>Created At</th>
                                 <th>Actions</th>
@@ -275,7 +275,7 @@ if (isset($_GET['view'])) {
                             <tr>
                                 <td><strong><?php echo htmlspecialchars($group['name']); ?></strong></td>
                                 <td><?php echo $group['student_count']; ?></td>
-                                <td><?php echo $group['teacher_count']; ?></td>
+                                <td><?php echo $group['lecturer_count']; ?></td>
                                 <td><?php echo htmlspecialchars($group['created_by_name']); ?></td>
                                 <td><?php echo formatDate($group['created_at']); ?></td>
                                 <td>

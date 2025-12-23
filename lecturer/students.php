@@ -2,12 +2,12 @@
 $pageTitle = 'My Students';
 $baseUrl = '..';
 require_once '../includes/header.php';
-requireTeacher();
+requireLecturer();
 
-$teacherId = getTeacherId($pdo, $_SESSION['user_id']);
+$lecturerId = getLecturerId($pdo, $_SESSION['user_id']);
 
-if (!$teacherId) {
-    setFlashMessage('danger', 'Teacher profile not found.');
+if (!$lecturerId) {
+    setFlashMessage('danger', 'Lecturer profile not found.');
     redirect('../logout.php');
 }
 
@@ -17,10 +17,10 @@ try {
         SELECT g.*
         FROM groups g
         JOIN group_assignments ga ON g.id = ga.group_id
-        WHERE ga.teacher_id = ?
+        WHERE ga.lecturer_id = ?
         ORDER BY g.name
     ");
-    $stmt->execute([$teacherId]);
+    $stmt->execute([$lecturerId]);
     $assignedGroups = $stmt->fetchAll();
 } catch (PDOException $e) {
     $assignedGroups = [];
@@ -41,7 +41,7 @@ if ($search) {
     $params[] = "%$search%";
 }
 
-if ($selectedGroup && teacherHasAccessToGroup($pdo, $teacherId, $selectedGroup)) {
+if ($selectedGroup && lecturerHasAccessToGroup($pdo, $lecturerId, $selectedGroup)) {
     try {
         $stmt = $pdo->prepare("
             SELECT s.*, g.name as group_name,
@@ -95,9 +95,9 @@ if (isset($_GET['view'])) {
             FROM students s
             JOIN groups g ON s.group_id = g.id
             JOIN group_assignments ga ON g.id = ga.group_id
-            WHERE s.id = ? AND ga.teacher_id = ?
+            WHERE s.id = ? AND ga.lecturer_id = ?
         ");
-        $stmt->execute([$studentId, $teacherId]);
+        $stmt->execute([$studentId, $lecturerId]);
         $viewStudent = $stmt->fetch();
         
         if ($viewStudent) {

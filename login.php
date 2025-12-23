@@ -8,16 +8,16 @@ if (isLoggedIn()) {
     if (isAdmin()) {
         redirect('admin/dashboard.php');
     } else {
-        redirect('teacher/dashboard.php');
+        redirect('lecturer/dashboard.php');
     }
 }
 
-// Fetch teachers for the login selection
+// Fetch lecturers for the login selection
 try {
-    $stmt = $pdo->query("SELECT t.id, t.name, u.username FROM teachers t JOIN users u ON t.user_id = u.id ORDER BY t.name ASC");
-    $teachers = $stmt->fetchAll();
+    $stmt = $pdo->query("SELECT l.id, l.name, u.username FROM lecturers l JOIN users u ON l.user_id = u.id ORDER BY l.name ASC");
+    $lecturers = $stmt->fetchAll();
 } catch (PDOException $e) {
-    $teachers = [];
+    $lecturers = [];
 }
 
 $error = '';
@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($user['role'] === 'admin') {
                     redirect('admin/dashboard.php');
                 } else {
-                    redirect('teacher/dashboard.php');
+                    redirect('lecturer/dashboard.php');
                 }
             } else {
                 $error = 'Invalid password.';
@@ -122,15 +122,15 @@ if (isset($_GET['timeout'])) {
             color: var(--text-secondary);
         }
 
-        /* Teacher selection specific */
-        .teacher-grid {
+        /* Lecturer selection specific */
+        .lecturer-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 1.5rem;
             margin-top: 2rem;
         }
 
-        .teacher-card {
+        .lecturer-card {
             background: white;
             padding: 1.5rem;
             border-radius: var(--radius-md);
@@ -141,13 +141,13 @@ if (isset($_GET['timeout'])) {
             border: 2px solid var(--border-color);
         }
 
-        .teacher-card:hover {
+        .lecturer-card:hover {
             border-color: var(--primary-color);
             transform: translateY(-5px);
             box-shadow: var(--shadow-lg);
         }
 
-        .teacher-avatar {
+        .lecturer-avatar {
             width: 80px;
             height: 80px;
             background: var(--primary-light);
@@ -213,7 +213,7 @@ if (isset($_GET['timeout'])) {
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .teacher-info {
+        .lecturer-info {
             cursor: pointer;
             padding-bottom: 1rem;
             border-bottom: 1px solid var(--border-color);
@@ -221,11 +221,11 @@ if (isset($_GET['timeout'])) {
             transition: opacity 0.2s;
         }
         
-        .teacher-info:hover {
+        .lecturer-info:hover {
             opacity: 0.8;
         }
 
-        .teacher-actions {
+        .lecturer-actions {
             display: flex;
             gap: 0.5rem;
             justify-content: center;
@@ -292,35 +292,35 @@ if (isset($_GET['timeout'])) {
                         <p>Login to manage system</p>
                     </div>
                     
-                    <!-- Teacher Card -->
-                    <div class="role-card" onclick="selectRole('teacher')">
+                    <!-- Lecturer Card -->
+                    <div class="role-card" onclick="selectRole('lecturer')">
                         <i class="fas fa-chalkboard-teacher"></i>
-                        <h2>Teacher</h2>
+                        <h2>Lecturer</h2>
                         <p>Login to mark attendance</p>
                     </div>
                 </div>
             </div>
 
-            <!-- View 2: Teacher Selection -->
-            <div id="teacherSelection" class="view-section">
+            <!-- View 2: Lecturer Selection -->
+            <div id="lecturerSelection" class="view-section">
                 <button class="back-btn" onclick="showView('roleSelection')">
                     <i class="fas fa-arrow-left"></i> Back to Roles
                 </button>
                 <h2 style="text-align: center; color: white; margin-bottom: 1rem;">Select Profile</h2>
                 
-                <?php if (empty($teachers)): ?>
+                <?php if (empty($lecturers)): ?>
                     <div class="alert alert-info text-center">
-                        No teachers found. Please login as Admin to add teachers.
+                        No lecturers found. Please login as Admin to add lecturers.
                     </div>
                 <?php else: ?>
-                    <div class="teacher-grid">
-                        <?php foreach ($teachers as $teacher): ?>
-                            <div class="teacher-card">
-                                <div class="teacher-info" onclick="selectTeacher('<?php echo htmlspecialchars($teacher['username'] ?? ''); ?>', '<?php echo htmlspecialchars($teacher['name']); ?>')">
-                                    <div class="teacher-avatar">
+                    <div class="lecturer-grid">
+                        <?php foreach ($lecturers as $lecturer): ?>
+                            <div class="lecturer-card">
+                                <div class="lecturer-info" onclick="selectLecturer('<?php echo htmlspecialchars($lecturer['username'] ?? ''); ?>', '<?php echo htmlspecialchars($lecturer['name']); ?>')">
+                                    <div class="lecturer-avatar">
                                         <?php 
                                             $initials = '';
-                                            $parts = explode(' ', $teacher['name']);
+                                            $parts = explode(' ', $lecturer['name']);
                                             foreach ($parts as $part) {
                                                 if (strlen($part) > 0) $initials .= $part[0];
                                                 if (strlen($initials) >= 2) break;
@@ -328,13 +328,13 @@ if (isset($_GET['timeout'])) {
                                             echo strtoupper($initials);
                                         ?>
                                     </div>
-                                    <h3><?php echo htmlspecialchars($teacher['name']); ?></h3>
+                                    <h3><?php echo htmlspecialchars($lecturer['name']); ?></h3>
                                 </div>
-                                <div class="teacher-actions">
-                                    <button class="btn-action login" onclick="selectTeacher('<?php echo htmlspecialchars($teacher['username'] ?? ''); ?>', '<?php echo htmlspecialchars($teacher['name']); ?>')">
+                                <div class="lecturer-actions">
+                                    <button class="btn-action login" onclick="selectLecturer('<?php echo htmlspecialchars($lecturer['username'] ?? ''); ?>', '<?php echo htmlspecialchars($lecturer['name']); ?>')">
                                         <i class="fas fa-sign-in-alt"></i> Login
                                     </button>
-                                    <a href="public_attendance_view.php?teacher_id=<?php echo $teacher['id']; ?>" class="btn-action view">
+                                    <a href="public_attendance_view.php?lecturer_id=<?php echo $lecturer['id']; ?>" class="btn-action view">
                                         <i class="fas fa-list-alt"></i> View Attendance
                                     </a>
                                 </div>
@@ -386,7 +386,7 @@ if (isset($_GET['timeout'])) {
         // State management
         const views = {
             roleSelection: document.getElementById('roleSelection'),
-            teacherSelection: document.getElementById('teacherSelection'),
+            lecturerSelection: document.getElementById('lecturerSelection'),
             loginFormSection: document.getElementById('loginFormSection')
         };
         
@@ -405,13 +405,13 @@ if (isset($_GET['timeout'])) {
                 previousView = 'roleSelection';
                 showView('loginFormSection');
             } else {
-                showView('teacherSelection');
+                showView('lecturerSelection');
             }
         }
 
-        function selectTeacher(username, name) {
+        function selectLecturer(username, name) {
             prepareLogin(username, name, 'fas fa-user-circle');
-            previousView = 'teacherSelection';
+            previousView = 'lecturerSelection';
             showView('loginFormSection');
         }
 
@@ -439,9 +439,9 @@ if (isset($_GET['timeout'])) {
             <?php if (isset($_POST['username']) && $_POST['username'] === 'admin'): ?>
                 selectRole('admin');
             <?php elseif (isset($_POST['username'])): ?>
-                // For teachers, we'd need to fuzzy match or just let them pick again.
+                // For lecturers, we'd need to fuzzy match or just let them pick again.
                 // Let's just show the error and stay on role selection to be safe/simple
-                // Or better, if it's a teacher login fail, show teacher selection?
+                // Or better, if it's a lecturer login fail, show lecturer selection?
             <?php endif; ?>
         <?php endif; ?>
     </script>

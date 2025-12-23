@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
-
+?>
 // Get all groups
 try {
     $stmt = $pdo->query("SELECT id, name FROM groups ORDER BY name");

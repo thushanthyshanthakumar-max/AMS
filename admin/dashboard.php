@@ -10,9 +10,9 @@ try {
     $stmt = $pdo->query("SELECT COUNT(*) FROM groups");
     $totalGroups = $stmt->fetchColumn();
     
-    // Total teachers
-    $stmt = $pdo->query("SELECT COUNT(*) FROM teachers");
-    $totalTeachers = $stmt->fetchColumn();
+    // Total lecturers
+    $stmt = $pdo->query("SELECT COUNT(*) FROM lecturers");
+    $totalLecturers = $stmt->fetchColumn();
     
     // Total students
     $stmt = $pdo->query("SELECT COUNT(*) FROM students");
@@ -42,7 +42,7 @@ try {
     
 } catch (PDOException $e) {
     setFlashMessage('danger', 'Error loading dashboard data.');
-    $totalGroups = $totalTeachers = $totalStudents = $totalPartitions = $recentAttendance = 0;
+    $totalGroups = $totalLecturers = $totalStudents = $totalPartitions = $recentAttendance = 0;
     $recentGroups = [];
 }
 ?>
@@ -66,8 +66,8 @@ try {
         <div class="stat-icon">
             <i class="fas fa-chalkboard-teacher"></i>
         </div>
-        <div class="stat-value"><?php echo $totalTeachers; ?></div>
-        <div class="stat-label">Total Teachers</div>
+        <div class="stat-value"><?php echo $totalLecturers; ?></div>
+        <div class="stat-label">Total Lecturers</div>
     </div>
     
     <div class="stat-card">
@@ -153,8 +153,8 @@ try {
             <a href="groups.php?action=create" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Create Group
             </a>
-            <a href="teachers.php?action=create" class="btn btn-success">
-                <i class="fas fa-plus"></i> Add Teacher
+            <a href="lecturers.php?action=create" class="btn btn-success">
+                <i class="fas fa-plus"></i> Add Lecturer
             </a>
             <a href="students.php?action=create" class="btn btn-warning">
                 <i class="fas fa-plus"></i> Add Student
