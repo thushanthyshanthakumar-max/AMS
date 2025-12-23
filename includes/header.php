@@ -433,6 +433,120 @@ require_once __DIR__ . '/functions.php';
         .alert-icon {
             font-size: 1.25rem;
         }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logout-btn-direct {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 0.6rem 1rem;
+            border-radius: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            border: 1px solid #fee2e2;
+        }
+
+        .logout-btn-direct:hover {
+            background: #fee2e2;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(220, 38, 38, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .logout-btn-direct span {
+                display: none;
+            }
+            .logout-btn-direct {
+                padding: 0;
+                height: 35px;
+                width: 35px;
+                justify-content: center;
+                border-radius: 10px;
+            }
+            .header-right {
+                gap: 0.5rem;
+            }
+        }
+
+        /* Modal Base Styles (Global) */
+        .modal {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background: rgba(15, 23, 42, 0.75) !important;
+            backdrop-filter: blur(8px) !important;
+            -webkit-backdrop-filter: blur(8px) !important;
+            z-index: 99999 !important;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex !important;
+            opacity: 1 !important;
+        }
+
+        .modal-content {
+            background: white !important;
+            width: 100% !important;
+            max-width: 550px !important;
+            border-radius: 24px !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+            overflow: hidden !important;
+            transform: translateY(30px);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0) !important;
+        }
+
+        .modal-header {
+            padding: 1.5rem 2rem !important;
+            background: #f8fafc !important;
+            border-bottom: 1px solid #f1f5f9 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+        }
+
+        .modal-header h3 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .modal-body {
+            padding: 2rem !important;
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem !important;
+            background: #f8fafc !important;
+            border-top: 1px solid #f1f5f9 !important;
+            display: flex !important;
+            justify-content: flex-end !important;
+            gap: 1rem !important;
+        }
     </style>
 </head>
 <body>
@@ -469,25 +583,29 @@ require_once __DIR__ . '/functions.php';
                 </ul>
             </nav>
 
-            <!-- Mobile Menu Toggle Button -->
-            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
-                <i class="fas fa-bars"></i>
-            </button>
+            <div class="header-right">
+                <!-- Mobile Menu Toggle Button -->
+                <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+                    <i class="fas fa-bars"></i>
+                </button>
 
-            <div class="user-area">
-                <div class="user-info">
-                    <span class="user-role"><?php echo isAdmin() ? 'Administrator' : 'Lecturer'; ?></span>
-                    <span class="user-name"><?php echo htmlspecialchars($_SESSION['username']); ?></span>
-                </div>
-                <div class="user-avatar">
-                   <?php echo strtoupper(substr($_SESSION['username'], 0, 1)); ?>
-                </div>
-                <div class="user-dropdown">
-                    <?php if (isLecturer()): ?>
-                        <a href="<?php echo isset($baseUrl) ? $baseUrl : ''; ?>/lecturer/profile.php"><i class="fas fa-user-cog"></i> Profile Settings</a>
-                    <?php endif; ?>
-                    <a href="<?php echo isset($baseUrl) ? $baseUrl : ''; ?>/logout.php" class="logout-link"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
-                </div>
+                <?php 
+                    $profileUrl = isLecturer() ? (isset($baseUrl) ? $baseUrl : '') . '/lecturer/profile.php' : '#';
+                ?>
+                <a href="<?php echo $profileUrl; ?>" class="user-area" style="text-decoration: none;">
+                    <div class="user-info">
+                        <span class="user-role"><?php echo isAdmin() ? 'Administrator' : 'Lecturer'; ?></span>
+                        <span class="user-name"><?php echo htmlspecialchars($_SESSION['username']); ?></span>
+                    </div>
+                    <div class="user-avatar">
+                       <?php echo strtoupper(substr($_SESSION['username'], 0, 1)); ?>
+                    </div>
+                </a>
+
+                <a href="<?php echo isset($baseUrl) ? $baseUrl : ''; ?>/logout.php" class="logout-btn-direct" title="Sign Out">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
             </div>
         </div>
     </header>

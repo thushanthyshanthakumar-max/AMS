@@ -12,14 +12,14 @@ if (getenv('MYSQLHOST') || getenv('RAILWAY_ENVIRONMENT')) {
     // Use local configuration
     
     // Database configuration
-    define('DB_HOST', 'localhost');
-    define('DB_NAME', 'attendance_system');
-    define('DB_USER', 'root');
-    define('DB_PASS', '');
-    // define('DB_HOST', 'sql107.infinityfree.com');
-    // define('DB_NAME', 'if0_40625038_attendance_system');
-    // define('DB_USER', 'if0_40625038');
-    // define('DB_PASS', 'pxDLG2EQicVsm');
+    //define('DB_HOST', 'localhost');
+    //define('DB_NAME', 'attendance_system');
+    //define('DB_USER', 'root');
+    //define('DB_PASS', '');
+     define('DB_HOST', 'sql204.ezyro.com');
+     define('DB_NAME', 'ezyro_40750460_attendance_system');
+     define('DB_USER', 'ezyro_40750460');
+     define('DB_PASS', 'e9ed2ee5c143');
     
     // Application configuration
     define('APP_NAME', 'Student Attendance Management System');

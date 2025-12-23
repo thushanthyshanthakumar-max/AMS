@@ -96,8 +96,8 @@ $preselectedGroup = isset($_GET['group_id']) ? (int)$_GET['group_id'] : null;
             <p>Manage student records and class assignments</p>
         </div>
         <div class="banner-actions">
-            <button onclick="openModal('createStudentModal')" class="btn btn-primary">
-                <i class="fas fa-plus-circle"></i> Enrol New Student
+            <button type="button" onclick="openModal('createStudentModal')" class="btn btn-primary">
+                <i class="fas fa-plus-circle"></i> Enroll New Student
             </button>
         </div>
     </div>
@@ -122,7 +122,7 @@ $preselectedGroup = isset($_GET['group_id']) ? (int)$_GET['group_id'] : null;
                 <i class="fas fa-user-slash" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1.5rem;"></i>
                 <h3 style="color: #64748b; font-weight: 700;">No Students Found</h3>
                 <p style="color: #94a3b8; margin-bottom: 2rem;">Start by adding your first student to the system.</p>
-                <button onclick="openModal('createStudentModal')" class="btn btn-primary">
+                <button type="button" onclick="openModal('createStudentModal')" class="btn btn-primary">
                     <i class="fas fa-plus"></i> Add First Student
                 </button>
             </div>

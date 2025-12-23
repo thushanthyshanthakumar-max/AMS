@@ -1,4 +1,5 @@
     </div> <!-- Close container -->
+</div> <!-- Close main-content -->
     
     <footer class="footer">
         <p>&copy; <?php echo date('Y'); ?> <?php echo APP_NAME; ?>. All rights reserved.</p>
