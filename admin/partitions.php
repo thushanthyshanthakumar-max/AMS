@@ -119,107 +119,243 @@ $selectedDay = isset($_GET['day']) ? $_GET['day'] : 'Monday';
     </div>
 </div>
 
-<div class="card" style="background: transparent; border: none; box-shadow: none;">
+<div class="card" style="background: transparent; border: none; box-shadow: none; padding: 0;">
     <div class="card-body" style="padding: 0;">
         <!-- Week Calendar View -->
-        <div class="week-calendar" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 1rem; margin-bottom: 2.5rem;">
+        <div class="week-calendar" style="display: flex; gap: 0.75rem; overflow-x: auto; padding: 0.5rem; margin-bottom: 2.5rem; scrollbar-width: none; -ms-overflow-style: none;">
+            <style>
+                .week-calendar::-webkit-scrollbar { display: none; }
+                .day-card-container { flex: 1; min-width: 120px; text-decoration: none; }
+                .day-card {
+                    background: white;
+                    color: #1e293b;
+                    padding: 1.25rem 0.75rem;
+                    border-radius: 20px;
+                    text-align: center;
+                    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+                    border: 1px solid #f1f5f9;
+                    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+                    cursor: pointer;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                }
+                .day-card.active {
+                    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+                    color: white;
+                    border: none;
+                    box-shadow: 0 15px 25px -5px rgba(99, 102, 241, 0.4);
+                    transform: translateY(-8px) scale(1.05);
+                }
+                .day-card:hover:not(.active) {
+                    transform: translateY(-5px);
+                    border-color: #6366f1;
+                    box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.1);
+                }
+                .day-name { font-size: 1.1rem; font-weight: 800; line-height: 1; }
+                .slot-label { font-size: 0.65rem; font-weight: 700; margin-top: 0.4rem; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.05em; }
+                .active .slot-label { opacity: 0.9; }
+
+                .session-slot {
+                    background: white;
+                    border-radius: 24px;
+                    padding: 2.5rem;
+                    margin-bottom: 2rem;
+                    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+                    border: 1px solid #f1f5f9;
+                    transition: transform 0.3s ease;
+                }
+                .session-slot:hover {
+                    transform: translateY(-5px);
+                }
+                .session-header-info { width: 100%; }
+                .session-name-row { 
+                    font-size: 1.25rem; 
+                    font-weight: 700; 
+                    color: #1e293b; 
+                    display: flex; 
+                    align-items: center; 
+                    gap: 0.75rem; 
+                    margin-bottom: 0.5rem; 
+                }
+                .session-time-row { 
+                    font-size: 1.5rem; 
+                    font-weight: 800; 
+                    color: #0f172a; 
+                    display: flex; 
+                    align-items: center; 
+                    gap: 0.75rem; 
+                    margin-bottom: 1.5rem;
+                }
+                .session-time-row span { font-size: 1.1rem; color: #94a3b8; font-weight: 600; margin: 0 0.4rem; }
+
+                .btn-delete-slot {
+                    background: #f8fafc;
+                    color: #1e293b;
+                    border: none;
+                    padding: 0.85rem 2.5rem;
+                    border-radius: 14px;
+                    font-weight: 800;
+                    font-size: 1rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 0.85rem;
+                    cursor: pointer;
+                    margin-bottom: 2rem;
+                    width: fit-content;
+                    transition: all 0.2s;
+                }
+                .btn-delete-slot:hover {
+                    background: #f1f5f9;
+                    color: #ef4444;
+                }
+
+                .assigned-title {
+                    font-size: 1rem;
+                    font-weight: 700;
+                    color: #94a3b8;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    margin-bottom: 1.5rem;
+                }
+                .group-list-vertical { display: flex; flex-direction: column; gap: 1.25rem; }
+                .group-item-row {
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                    color: #0f172a;
+                    font-weight: 900;
+                    font-size: 1.2rem;
+                    letter-spacing: -0.02em;
+                }
+                .group-item-row i { color: #0f172a; font-size: 1.35rem; width: 28px; text-align: center; }
+                
+                .remove-group-box {
+                    width: 26px;
+                    height: 26px;
+                    border: 1.5px solid #0f172a;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 0.85rem;
+                    cursor: pointer;
+                    background: transparent;
+                    color: #0f172a;
+                    padding: 0;
+                    line-height: 1;
+                    margin-left: 0.5rem;
+                    border-radius: 4px;
+                    transition: all 0.2s;
+                }
+                .remove-group-box:hover {
+                    background: #0f172a;
+                    color: white;
+                }
+
+                .btn-add-group-simple {
+                    background: transparent;
+                    color: #0f172a;
+                    border: 1.5px solid #0f172a;
+                    padding: 0.6rem 1.25rem;
+                    font-size: 1.15rem;
+                    font-weight: 900;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.6rem;
+                    cursor: pointer;
+                    margin-top: 1.5rem;
+                    width: fit-content;
+                    border-radius: 4px;
+                    transition: all 0.2s;
+                    letter-spacing: -0.01em;
+                }
+                .btn-add-group-simple:hover {
+                    background: #f8fafc;
+                    transform: translateX(5px);
+                }
+            </style>
+
             <?php 
             $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
             foreach ($days as $day): 
-                $count = count($partitionsByDay[$day]);
                 $isActive = ($selectedDay === $day);
             ?>
-                <a href="?day=<?php echo $day; ?>" style="text-decoration: none;">
-                    <div class="day-card" style="
-                        background: <?php echo $isActive ? 'var(--accent-gradient)' : 'white'; ?>;
-                        color: <?php echo $isActive ? 'white' : '#1e293b'; ?>;
-                        padding: 1.5rem 1rem;
-                        border-radius: 24px;
-                        text-align: center;
-                        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                        border: 1px solid <?php echo $isActive ? 'transparent' : '#f1f5f9'; ?>;
-                        box-shadow: <?php echo $isActive ? '0 20px 25px -5px rgba(99, 102, 241, 0.4)' : '0 4px 6px -1px rgba(0,0,0,0.05)'; ?>;
-                        position: relative;
-                        overflow: hidden;
-                    ">
-                        <?php if ($isActive): ?>
-                            <div style="position: absolute; top: -10px; right: -10px; width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 50%; blur: 10px;"></div>
-                        <?php endif; ?>
-                        <div style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; opacity: <?php echo $isActive ? '0.9' : '0.5'; ?>;">
-                            <?php echo substr($day, 0, 3); ?>
-                        </div>
-                        <div style="font-size: 1.75rem; font-weight: 800; line-height: 1;"><?php echo $count; ?></div>
-                        <div style="font-size: 0.75rem; font-weight: 600; margin-top: 0.25rem; opacity: <?php echo $isActive ? '0.8' : '0.4'; ?>;">
-                            SLOTS
-                        </div>
+                <a href="?day=<?php echo $day; ?>" class="day-card-container">
+                    <div class="day-card <?php echo $isActive ? 'active' : ''; ?>">
+                        <div class="day-name"><?php echo $day; ?></div>
+                        <div class="slot-label">SLOTS</div>
                     </div>
                 </a>
             <?php endforeach; ?>
         </div>
 
-        <!-- Selected Day Partitions -->
-        <div class="card" style="background: var(--light-color); margin-top: 2rem;">
-            <div class="card-header" style="background: white;">
-                <h3><i class="fas fa-calendar-day"></i> <?php echo $selectedDay; ?> Schedule</h3>
-                <button onclick="openModalWithDay('<?php echo $selectedDay; ?>')" class="btn btn-primary btn-sm">
-                    <i class="fas fa-plus"></i> Add Time Slot
+        <div class="schedule-container" style="background: transparent; padding: 0; border: none; box-shadow: none;">
+            <div class="schedule-header" style="border: none; padding-bottom: 2rem; display: flex; align-items: center; justify-content: space-between;">
+                <h2 style="font-size: 1.75rem; color: #0f172a; font-weight: 800;"><i class="fas fa-calendar-check" style="color: #6366f1;"></i> <?php echo $selectedDay; ?> Sessions</h2>
+                <button onclick="openModalWithDay('<?php echo $selectedDay; ?>')" class="btn btn-primary" style="padding: 0.75rem 1.5rem; border-radius: 16px; background: #6366f1;">
+                    <i class="fas fa-plus-circle"></i> Add New Session
                 </button>
             </div>
-            <div class="card-body">
+
+            <div class="schedule-body">
                 <?php if (empty($partitionsByDay[$selectedDay])): ?>
-                    <div class="empty-state">
-                        <i class="fas fa-calendar-times"></i>
-                        <p>No time slots scheduled for <?php echo $selectedDay; ?></p>
-                        <button onclick="openModalWithDay('<?php echo $selectedDay; ?>')" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> Add First Time Slot
+                    <div style="background: white; border-radius: 32px; padding: 6rem 2rem; text-align: center; border: 1px dashed #cbd5e1;">
+                        <div style="width: 100px; height: 100px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem; color: #cbd5e1; font-size: 3rem;">
+                            <i class="fas fa-calendar-day"></i>
+                        </div>
+                        <h3 style="color: #334155; font-weight: 800; font-size: 1.5rem; margin-bottom: 0.75rem;">No Academic Slots Defined</h3>
+                        <p style="color: #64748b; margin-bottom: 2.5rem; font-size: 1.1rem;">Start by adding your first class session to this day's schedule.</p>
+                        <button onclick="openModalWithDay('<?php echo $selectedDay; ?>')" class="btn btn-primary" style="padding: 1rem 2.5rem; border-radius: 18px;">
+                            <i class="fas fa-plus"></i> Configure Day
                         </button>
                     </div>
                 <?php else: ?>
                     <?php foreach ($partitionsByDay[$selectedDay] as $slot): ?>
-                        <div class="time-slot-card">
-                            <div class="slot-header">
-                                <div>
-                                    <div class="slot-title">
-                                        <i class="fas fa-clock"></i>
-                                        <?php echo htmlspecialchars($slot['name']); ?>
-                                    </div>
-                                    <div class="slot-time">
-                                        <i class="fas fa-hourglass-start"></i>
-                                        <strong><?php echo date('g:i A', strtotime($slot['start_time'])); ?></strong>
-                                        <span>to</span>
-                                        <strong><?php echo date('g:i A', strtotime($slot['end_time'])); ?></strong>
-                                    </div>
+                        <div class="session-slot">
+                            <div class="session-header-info">
+                                <div class="session-name-row">
+                                    <i class="fas fa-clock" style="color: #6366f1;"></i>
+                                    <?php echo htmlspecialchars($slot['name']); ?>
                                 </div>
-                                <form method="POST" style="display: inline;" onsubmit="return confirm('Delete this entire time slot and all assigned groups?');">
+                                <div class="session-time-row">
+                                    <i class="fas fa-hourglass-start" style="color: #6366f1;"></i>
+                                    <?php echo date('g:i A', strtotime($slot['start_time'])); ?>
+                                    <span>to</span>
+                                    <?php echo date('g:i A', strtotime($slot['end_time'])); ?>
+                                </div>
+                                
+                                <form method="POST" onsubmit="return confirm('Delete this entire session?');">
                                     <input type="hidden" name="action" value="delete_slot">
                                     <input type="hidden" name="name" value="<?php echo htmlspecialchars($slot['name']); ?>">
                                     <input type="hidden" name="start_time" value="<?php echo $slot['start_time']; ?>">
                                     <input type="hidden" name="end_time" value="<?php echo $slot['end_time']; ?>">
                                     <input type="hidden" name="day_of_week" value="<?php echo $slot['day_of_week']; ?>">
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        <i class="fas fa-trash"></i> Delete Slot
+                                    <button type="submit" class="btn-delete-slot">
+                                        <i class="fas fa-trash-alt"></i> Delete Slot
                                     </button>
                                 </form>
-                            </div>
-                            
-                            <div>
-                                <strong style="color: var(--text-secondary); font-size: 0.875rem; display: block; margin-bottom: 0.5rem;">
+
+                                <div class="assigned-title">
                                     <i class="fas fa-users"></i> Assigned Groups (<?php echo count($slot['groups']); ?>):
-                                </strong>
-                                <div class="groups-container">
+                                </div>
+                                
+                                <div class="group-list-vertical">
                                     <?php foreach ($slot['groups'] as $group): ?>
-                                        <div class="group-badge">
+                                        <div class="group-item-row">
                                             <i class="fas fa-user-graduate"></i>
                                             <?php echo htmlspecialchars($group['group_name']); ?>
-                                            <form method="POST" style="display: inline; margin: 0;" onsubmit="return confirm('Remove this group from this time slot?');">
+                                            <form method="POST" style="display: inline;" onsubmit="return confirm('Remove this group from this slot?');">
                                                 <input type="hidden" name="action" value="delete_single">
                                                 <input type="hidden" name="id" value="<?php echo $group['id']; ?>">
-                                                <button type="submit" title="Remove group">×</button>
+                                                <button type="submit" class="remove-group-box">×</button>
                                             </form>
                                         </div>
                                     <?php endforeach; ?>
                                     
-                                    <button class="add-group-btn" onclick="addGroupToSlot('<?php echo htmlspecialchars($slot['name'], ENT_QUOTES); ?>', '<?php echo $slot['start_time']; ?>', '<?php echo $slot['end_time']; ?>', '<?php echo $slot['day_of_week']; ?>', [<?php echo implode(',', array_column($slot['groups'], 'group_id')); ?>])">
+                                    <button class="btn-add-group-simple" onclick="addGroupToSlot('<?php echo htmlspecialchars($slot['name'], ENT_QUOTES); ?>', '<?php echo $slot['start_time']; ?>', '<?php echo $slot['end_time']; ?>', '<?php echo $slot['day_of_week']; ?>', [<?php echo implode(',', array_column($slot['groups'], 'group_id')); ?>])">
                                         <i class="fas fa-plus"></i> Add Group
                                     </button>
                                 </div>
