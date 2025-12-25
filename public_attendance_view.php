@@ -442,12 +442,12 @@ $selectedPartitionId = isset($_GET['partition_id']) ? (int)$_GET['partition_id']
         <div class="controls-wrapper">
             <form method="GET" id="dateForm">
                 <input type="hidden" name="lecturer_id" value="<?php echo $lecturerId; ?>">
-                <label for="date_trigger" class="date-btn">
+                <div class="date-btn" onclick="document.getElementById('date_trigger').showPicker()">
                     <i class="fas fa-calendar-alt"></i>
                     <span><?php echo date('d M Y', strtotime($selectedDate)); ?></span>
                     <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
-                </label>
-                <input type="date" id="date_trigger" name="date" class="custom-input" value="<?php echo $selectedDate; ?>" onchange="this.form.submit()" style="position: absolute; opacity: 0; width: 0; height: 0;">
+                </div>
+                <input type="date" id="date_trigger" name="date" value="<?php echo $selectedDate; ?>" onchange="this.form.submit()" style="opacity: 0; position: absolute; z-index: -1;">
             </form>
 
             <?php if ($selectedPartitionId): ?>

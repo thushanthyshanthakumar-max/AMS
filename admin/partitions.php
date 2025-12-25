@@ -391,6 +391,7 @@ $selectedDay = isset($_GET['day']) ? $_GET['day'] : 'Monday';
                         <option value="Saturday">Saturday</option>
                         <option value="Sunday">Sunday</option>
                     </select>
+                    <input type="hidden" name="day_of_week" id="hidden_day_of_week" disabled>
                 </div>
                 
                 <div class="form-group">
@@ -414,7 +415,7 @@ $selectedDay = isset($_GET['day']) ? $_GET['day'] : 'Monday';
                 <div class="form-group">
                     <label class="form-label">Select Groups (Multiple)</label>
                     <div style="max-height: 200px; overflow-y: auto; border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem;">
-                        <?php foreach ($groups as $group): ?>
+                <?php foreach ($groups as $group): ?>
                             <label style="display: block; padding: 0.5rem; cursor: pointer; border-radius: var(--radius-sm); transition: var(--transition);" onmouseover="this.style.background='var(--light-color)'" onmouseout="this.style.background='transparent'">
                                 <input type="checkbox" name="group_ids[]" value="<?php echo $group['id']; ?>" style="margin-right: 0.5rem;">
                                 <?php echo htmlspecialchars($group['name']); ?>
@@ -446,6 +447,17 @@ $selectedDay = isset($_GET['day']) ? $_GET['day'] : 'Monday';
     </div>
 </div>
 
+<style>
+/* Fix for modal scrolling */
+.modal {
+    align-items: flex-start !important;
+    overflow-y: auto !important;
+}
+.modal-content {
+    margin: 1.5rem auto !important;
+}
+</style>
+
 <script>
 function openModalWithDay(day) {
     // Reset form for new time slot
@@ -464,6 +476,10 @@ function resetForm() {
     document.getElementById('start_time').readOnly = false;
     document.getElementById('end_time').readOnly = false;
     document.getElementById('day_of_week').disabled = false;
+    
+    // Disable hidden input if it exists, or clear it
+    const hiddenDay = document.getElementById('hidden_day_of_week');
+    if (hiddenDay) hiddenDay.disabled = true;
     
     // Show all groups
     const checkboxes = document.querySelectorAll('input[name="group_ids[]"]');
@@ -486,6 +502,13 @@ function addGroupToSlot(name, startTime, endTime, dayOfWeek, assignedGroupIds) {
     document.getElementById('start_time').readOnly = true;
     document.getElementById('end_time').readOnly = true;
     document.getElementById('day_of_week').disabled = true;
+    
+    // Enable hidden input for day_of_week
+    const hiddenDay = document.getElementById('hidden_day_of_week');
+    if (hiddenDay) {
+        hiddenDay.value = dayOfWeek;
+        hiddenDay.disabled = false;
+    }
     
     // Hide already assigned groups
     const checkboxes = document.querySelectorAll('input[name="group_ids[]"]');
