@@ -63,7 +63,8 @@ try {
         JOIN groups g ON p.group_id = g.id
         ORDER BY 
             FIELD(p.day_of_week, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'),
-            p.start_time
+            p.start_time,
+            g.name
     ");
     $allPartitions = $stmt->fetchAll();
     
